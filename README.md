@@ -6,6 +6,7 @@ Adobe pdf software sucks. All I want to do is view a pdf, add some text to it, a
 - Reordering or deleting a few pages
 - Highlighting text
 - Adding text
+  
 And much more (see Notion)
 
 
