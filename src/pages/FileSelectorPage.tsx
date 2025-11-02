@@ -13,19 +13,19 @@ export default function FileSelectorPage({ onFileSelected }: FileSelectorPagePro
         multiple: false,
         filters: [{
           name: 'PDF',
-          extensions: ['pdf']
-        }]
+          extensions: ['pdf'],
+        }],
       });
 
       if (selected) {
-        console.log("Selected file:", selected);
+        console.log('Selected file:', selected);
         const response = await invoke<string>('load_pdf', { filePath: selected });
-        console.log("Response from Rust:", response);
+        console.log('Response from Rust:', response);
         const url = convertFileSrc(selected);
         onFileSelected(url);
       }
     } catch (error) {
-      console.error("Error selecting file:", error);
+      console.error('Error selecting file:', error);
     }
   };
 

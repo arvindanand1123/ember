@@ -5,4 +5,3 @@ export interface Highlight {
   rects: DOMRect[];
   color: string;
 }
-

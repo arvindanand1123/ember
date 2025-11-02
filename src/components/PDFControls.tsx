@@ -4,7 +4,6 @@ interface PDFControlsProps {
   onBack: () => void;
 }
 
-
 export default function PDFControls({
   currentPage,
   numPages,
