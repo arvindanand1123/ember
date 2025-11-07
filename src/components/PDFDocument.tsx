@@ -30,7 +30,7 @@ export default function PDFDocumentViewer({
             key={`page_${index + 1}`}
             pageNumber={index + 1}
             renderTextLayer={true}
-            renderAnnotationLayer={false}
+            renderAnnotationLayer={true}
           />
         ))}
       </Document>
