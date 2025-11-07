@@ -13,6 +13,7 @@ export function usePageNumber() {
     }
 
     const pages = container.querySelectorAll('.react-pdf__Page');
+
     const containerTop = container.scrollTop;
     const containerHeight = container.clientHeight;
     const centerY = containerTop + containerHeight / 2;
@@ -25,8 +26,8 @@ export function usePageNumber() {
       const pageTop = pageElement.offsetTop;
       const pageHeight = pageElement.offsetHeight;
       const pageCenter = pageTop + pageHeight / 2;
-      const distance = Math.abs(pageCenter - centerY);
 
+      const distance = Math.abs(pageCenter - centerY);
       if (distance < closestDistance) {
         closestDistance = distance;
         closestPage = index + 1;
