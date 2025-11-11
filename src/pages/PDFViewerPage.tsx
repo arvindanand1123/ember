@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import PDFControls from '../components/PDFControls';
 import PDFDocumentViewer from '../components/PDFDocument';
+import { PDFViewer } from '../components';
 
 interface PDFViewerPageProps {
   pdfUrl: string;
@@ -16,7 +17,7 @@ export default function PDFViewerPage({ pdfUrl, onBack }: PDFViewerPageProps) {
   };
 
   return (
-    <div className="pdf-viewer">
+    <PDFViewer>
       <PDFControls
         currentPage={currentPage}
         numPages={numPages}
@@ -28,6 +29,6 @@ export default function PDFViewerPage({ pdfUrl, onBack }: PDFViewerPageProps) {
         onDocumentLoadSuccess={onDocumentLoadSuccess}
         onPageChange={setCurrentPage}
       />
-    </div>
+    </PDFViewer>
   );
 }

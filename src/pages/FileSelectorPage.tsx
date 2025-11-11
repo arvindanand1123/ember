@@ -1,6 +1,7 @@
 import { open } from '@tauri-apps/plugin-dialog';
 import { invoke } from '@tauri-apps/api/core';
 import { convertFileSrc } from '@tauri-apps/api/core';
+import { FileSelector, SelectFileButton } from '../components';
 
 interface FileSelectorPageProps {
   onFileSelected: (url: string) => void;
@@ -30,10 +31,10 @@ export default function FileSelectorPage({ onFileSelected }: FileSelectorPagePro
   };
 
   return (
-    <div className="file-selector">
-      <button onClick={handleSelectFile} className="select-file-button">
+    <FileSelector>
+      <SelectFileButton onClick={handleSelectFile}>
         Select File
-      </button>
-    </div>
+      </SelectFileButton>
+    </FileSelector>
   );
 }
