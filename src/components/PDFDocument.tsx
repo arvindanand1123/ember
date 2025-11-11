@@ -2,6 +2,7 @@ import { Document, Page } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { usePageNumber } from '../utils/page';
+import { PDFDocument } from './Container';
 
 interface PDFDocumentViewerProps {
   pdfUrl: string;
@@ -20,7 +21,7 @@ export default function PDFDocumentViewer({
   const { containerRef, getCurrentPage } = usePageNumber();
 
   return (
-    <div className="pdf-document" ref={containerRef} onScroll={() => onPageChange(getCurrentPage())}>
+    <PDFDocument ref={containerRef} onScroll={() => onPageChange(getCurrentPage())}>
       <Document
         file={pdfUrl}
         onLoadSuccess={onDocumentLoadSuccess}
@@ -34,6 +35,6 @@ export default function PDFDocumentViewer({
           />
         ))}
       </Document>
-    </div>
+    </PDFDocument>
   );
 }

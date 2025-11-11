@@ -1,3 +1,6 @@
+import { PDFControlsContainer, ControlsLeft, PageInfo } from './PDFControls.styled';
+import { BackButton } from './Button';
+
 interface PDFControlsProps {
   currentPage: number;
   numPages: number;
@@ -10,13 +13,13 @@ export default function PDFControls({
   onBack,
 }: PDFControlsProps) {
   return (
-    <div className="pdf-controls">
-      <div className="controls-left">
-        <button onClick={onBack} className="back-button">
+    <PDFControlsContainer>
+      <ControlsLeft>
+        <BackButton onClick={onBack}>
           Back
-        </button>
-        <span className="page-info">Page {currentPage} of {numPages}</span>
-      </div>
-    </div>
+        </BackButton>
+        <PageInfo>Page {currentPage} of {numPages}</PageInfo>
+      </ControlsLeft>
+    </PDFControlsContainer>
   );
 }
