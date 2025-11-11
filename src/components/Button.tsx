@@ -34,6 +34,7 @@ export const SelectFileButton = styled(Button)`
 export const BackButton = styled(Button)`
   padding: 8px 16px;
   font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.danger};
 `;
 
 export const ClearButton = styled(Button)`

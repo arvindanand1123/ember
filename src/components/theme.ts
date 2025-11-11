@@ -16,7 +16,7 @@ export const theme = {
     textPrimary: colors.grayDark.gray12,
     textSecondary: colors.grayDark.gray11,
     textTertiary: colors.grayDark.gray10,
-    selection: colors.blueDark.blue5,
+    selection: colors.blue.blue7,
   },
   fonts: {
     body: 'Inter, Avenir, Helvetica, Arial, sans-serif',
