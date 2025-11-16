@@ -4,3 +4,4 @@ export type { Theme } from './theme';
 export * from './Container';
 export * from './Button';
 export * from './PDFControls.styled';
+export { default as CommandInput } from './CommandInput';

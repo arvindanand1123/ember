@@ -1,8 +1,8 @@
 import { Document, Page } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import { usePageNumber } from '../utils/page';
 import { PDFDocument } from './Container';
+import { usePageNumber } from '../hooks/usePageNumber';
 
 interface PDFDocumentViewerProps {
   pdfUrl: string;
