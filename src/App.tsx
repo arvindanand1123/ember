@@ -12,12 +12,12 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <GlobalStyles />
+      <GlobalStyles/>
       <Container>
         {!pdfUrl ? (
-          <FileSelectorPage onFileSelected={setPdfUrl} />
+          <FileSelectorPage onFileSelected={setPdfUrl}/>
         ) : (
-          <PDFViewerPage pdfUrl={pdfUrl} onBack={() => setPdfUrl(null)} />
+          <PDFViewerPage pdfUrl={pdfUrl} onBack={() => setPdfUrl(null)}/>
         )}
       </Container>
     </ThemeProvider>
