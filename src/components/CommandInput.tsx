@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { useHandleKeyDown } from '../hooks/useHandleKeyDown';
 
 const CommandInputContainer = styled.div`
   position: fixed;
@@ -41,59 +42,26 @@ const StyledInput = styled.input`
 export default function CommandInput() {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [showCommandInput, setShowCommandInput] = useState<boolean>(false);
-  const [commandText, setCommandText] = useState<string>('');
+  const { handleKeyDown, showCommandInput, commandText } = useHandleKeyDown({ inputRef });
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === ':' && !showCommandInput) {
-        e.preventDefault();
-        setShowCommandInput(true);
-        setCommandText('');
-      }
-
-      if ( showCommandInput ){
-        inputRef.current?.focus();
-      }
-
-    };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showCommandInput]);
-
-  const handleCommandSubmit = (command: string) => {
-    console.log('Command entered:', command);
-    setShowCommandInput(false);
-    setCommandText('');
-  };
-
-  const handleCommandClose = () => {
-    setShowCommandInput(false);
-    setCommandText('');
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleCommandSubmit(commandText);
-    } else if (e.key === 'Escape') {
-      e.preventDefault();
-      handleCommandClose();
-    }
-  };
+  }, [showCommandInput, handleKeyDown]);
 
   return (
-    <CommandInputContainer>
-      <CommandPrompt>:</CommandPrompt>
-      <StyledInput
-        ref={inputRef}
-        type="text"
-        value={commandText}
-        onChange={(e) => setCommandText(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Enter command..."
-      />
-    </CommandInputContainer>
+    showCommandInput ? (
+      <CommandInputContainer>
+        <CommandPrompt>:</CommandPrompt>
+        <StyledInput
+          ref={inputRef}
+          type="text"
+          value={commandText}
+          onChange={() => {}}
+          onKeyDown={handleKeyDown}
+          placeholder="Enter command..."
+        />
+      </CommandInputContainer>
+    ) : ( <></> )
   );
 }
