@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PDFControls from '../components/PDFControls';
 import PDFDocumentViewer from '../components/PDFDocument';
-import { PDFViewer } from '../components';
+import { CommandInput, PDFViewer } from '../components';
 
 interface PDFViewerPageProps {
   pdfUrl: string;
@@ -29,6 +29,7 @@ export default function PDFViewerPage({ pdfUrl, onBack }: PDFViewerPageProps) {
         onDocumentLoadSuccess={onDocumentLoadSuccess}
         onPageChange={setCurrentPage}
       />
+      <CommandInput/>
     </PDFViewer>
   );
 }
