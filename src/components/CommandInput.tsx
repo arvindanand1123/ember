@@ -42,11 +42,15 @@ const StyledInput = styled.input`
 export default function CommandInput() {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { handleKeyDown, showCommandInput, commandText } = useHandleKeyDown({ inputRef });
+  const { handleKeyDown, showCommandInput, commandText, handleOnChange } = useHandleKeyDown({ inputRef });
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    const handleWindowKeyDown = (e: KeyboardEvent) => {
+      handleKeyDown(e as unknown as React.KeyboardEvent<HTMLInputElement>);
+    };
+
+    window.addEventListener('keydown', handleWindowKeyDown);
+    return () => window.removeEventListener('keydown', handleWindowKeyDown);
   }, [showCommandInput, handleKeyDown]);
 
   return (
@@ -57,7 +61,7 @@ export default function CommandInput() {
           ref={inputRef}
           type="text"
           value={commandText}
-          onChange={() => {}}
+          onChange={handleOnChange}
           onKeyDown={handleKeyDown}
           placeholder="Enter command..."
         />

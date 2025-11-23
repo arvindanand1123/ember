@@ -15,10 +15,8 @@ export function useHandleKeyDown({ inputRef }: { inputRef:React.RefObject<HTMLIn
     handleCommandClose();
   };
 
-  const handleOnChange = (e:React.ChangeEventHandler<HTMLInputElement> | undefined) => {
-    if (e){
-      setCommandText(e.target.value);
-    }
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCommandText(e.target.value);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
