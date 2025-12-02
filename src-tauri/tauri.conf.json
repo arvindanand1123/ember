@@ -35,8 +35,6 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": {
-      "bin/pdfium/lib/libpdfium.dylib": "lib/libpdfium.dylib"
-    }
+    "resources": ["libpdfium/**"]
   }
 }
