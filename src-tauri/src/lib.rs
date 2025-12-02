@@ -1,82 +1,14 @@
 use pdfium_render::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
-use tauri::{AppHandle, Manager};
 
-fn get_pdfium(app_handle: &AppHandle) -> Result<Pdfium, String> {
-    println!("🔍 Initializing Pdfium...");
-
-    // 1. Try bundled resource path first (works in production)
-    if let Ok(resource_path) = app_handle.path().resource_dir() {
-        let lib_path = resource_path.join("lib").join(pdfium_library_name());
-        println!("🔄 Trying bundled resource path: {}", lib_path.display());
-        if lib_path.exists() {
-            match Pdfium::bind_to_library(&lib_path) {
-                Ok(bindings) => {
-                    println!("✅ Loaded Pdfium from bundled resources");
-                    return Ok(Pdfium::new(bindings));
-                }
-                Err(e) => {
-                    println!("⚠️  Failed to load from bundled path: {:?}", e);
-                }
-            }
-        }
-    }
-
-    // 2. Try development path (src-tauri/bin/pdfium/lib)
-    let dev_paths = get_dev_library_paths();
-    for dev_path in &dev_paths {
-        println!("🔄 Trying dev path: {}", dev_path.display());
-        if dev_path.exists() {
-            match Pdfium::bind_to_library(dev_path) {
-                Ok(bindings) => {
-                    println!("✅ Loaded Pdfium from dev path");
-                    return Ok(Pdfium::new(bindings));
-                }
-                Err(e) => {
-                    println!("⚠️  Failed to load from dev path: {:?}", e);
-                }
-            }
-        }
-    }
-
-    // 3. Try system library as fallback
-    match Pdfium::bind_to_system_library() {
-        Ok(bindings) => {
-            println!("✅ Loaded Pdfium from system library");
-            return Ok(Pdfium::new(bindings));
-        }
-        Err(e) => {
-            println!("⚠️  System library not found: {:?}", e);
-        }
-    }
-
-    Err(format!(
-        "❌ Could not load Pdfium library!\n\
-         Tried bundled resources, dev paths, and system library.\n\
-         Ensure libpdfium.dylib is in src-tauri/bin/pdfium/lib/"
+fn get_pdfium() -> Result<Pdfium, String> {
+    let bindings = Pdfium::bind_to_library(Pdfium::pdfium_platform_library_name_at_path(
+        "../bin/pdfium/lib/libpdfium.dylib",
     ))
-}
+    .or_else(|_| Pdfium::bind_to_system_library())
+    .map_err(|e| format!("Failed to initialize Pdfium library: {:?}", e))?;
 
-fn pdfium_library_name() -> &'static str {
-    #[cfg(target_os = "macos")]
-    { "libpdfium.dylib" }
-    #[cfg(target_os = "windows")]
-    { "pdfium.dll" }
-    #[cfg(target_os = "linux")]
-    { "libpdfium.so" }
-}
-
-fn get_dev_library_paths() -> Vec<PathBuf> {
-    let lib_name = pdfium_library_name();
-    vec![
-        // When running from src-tauri directory
-        PathBuf::from("bin/pdfium/lib").join(lib_name),
-        // When running from project root
-        PathBuf::from("src-tauri/bin/pdfium/lib").join(lib_name),
-        // Absolute path fallback
-        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("bin/pdfium/lib").join(lib_name),
-    ]
+    Ok(Pdfium::new(bindings))
 }
 
 #[derive(Serialize, Deserialize)]
@@ -102,10 +34,10 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-fn load_pdf(app_handle: AppHandle, file_path: String) -> Result<PdfMetadata, String> {
+fn load_pdf(file_path: String) -> Result<PdfMetadata, String> {
     println!("Loading PDF file: {}", file_path);
 
-    let pdfium = get_pdfium(&app_handle)?;
+    let pdfium = get_pdfium()?;
 
     let document = pdfium
         .load_pdf_from_file(&file_path, None)
@@ -140,8 +72,8 @@ fn load_pdf(app_handle: AppHandle, file_path: String) -> Result<PdfMetadata, Str
 }
 
 #[tauri::command]
-fn get_page_info(app_handle: AppHandle, file_path: String, page_index: u16) -> Result<PageInfo, String> {
-    let pdfium = get_pdfium(&app_handle)?;
+fn get_page_info(file_path: String, page_index: u16) -> Result<PageInfo, String> {
+    let pdfium = get_pdfium()?;
 
     let document = pdfium
         .load_pdf_from_file(&file_path, None)
@@ -164,12 +96,11 @@ fn get_page_info(app_handle: AppHandle, file_path: String, page_index: u16) -> R
 
 #[tauri::command]
 fn render_page_to_base64(
-    app_handle: AppHandle,
     file_path: String,
     page_index: u16,
     scale: Option<f32>,
 ) -> Result<String, String> {
-    let pdfium = get_pdfium(&app_handle)?;
+    let pdfium = get_pdfium()?;
 
     let document = pdfium
         .load_pdf_from_file(&file_path, None)
