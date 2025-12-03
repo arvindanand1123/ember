@@ -1,41 +1,32 @@
+use base64::Engine;
 use pdfium_render::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use tauri::{AppHandle, Manager};
 
 const PDFIUM_LIB_NAME: &str = "libpdfium.dylib";
 const PDFIUM_DIR_NAME: &str = "libpdfium";
 
 pub fn get_pdfium(app_handle: &AppHandle) -> Result<Pdfium, String> {
+    let path;
     if let Ok(resource_dir) = app_handle.path().resource_dir() {
-        let bundled_path = resource_dir.join(PDFIUM_DIR_NAME).join(PDFIUM_LIB_NAME);
-        if let Some(pdfium) = try_load_pdfium(&bundled_path)? {
-            return Ok(pdfium);
-        }
+        path = resource_dir.join(PDFIUM_DIR_NAME).join(PDFIUM_LIB_NAME);
+    } else {
+        path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join(PDFIUM_DIR_NAME)
+            .join(PDFIUM_LIB_NAME);
     }
 
-    let dev_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join(PDFIUM_DIR_NAME)
-        .join(PDFIUM_LIB_NAME);
-
-    if let Some(pdfium) = try_load_pdfium(&dev_path)? {
-        return Ok(pdfium);
-    }
-
-    match Pdfium::bind_to_system_library() {
-        Ok(bindings) => Ok(Pdfium::new(bindings)),
-        Err(e) => Err(format!("Failed to load Pdfium: {:?}", e)),
-    }
-}
-
-fn try_load_pdfium(path: &Path) -> Result<Option<Pdfium>, String> {
     if !path.exists() {
-        return Ok(None);
-    }
-
-    match Pdfium::bind_to_library(path) {
-        Ok(bindings) => Ok(Some(Pdfium::new(bindings))),
-        Err(_) => Ok(None),
+        match Pdfium::bind_to_system_library() {
+            Ok(bindings) => Ok(Pdfium::new(bindings)),
+            Err(e) => Err(format!("Failed to load Pdfium: {:?}", e)),
+        }
+    } else {
+        match Pdfium::bind_to_library(path) {
+            Ok(bindings) => Ok(Pdfium::new(bindings)),
+            Err(e) => Err(format!("Failed to load Pdfium from path: {:?}", e)),
+        }
     }
 }
 
@@ -66,8 +57,6 @@ fn load_pdf(app_handle: AppHandle, file_path: String) -> Result<PdfMetadata, Str
     println!("Loading PDF file: {}", file_path);
 
     let pdfium = get_pdfium(&app_handle)?;
-
-    println!("Loaded pdfium");
 
     let document = pdfium
         .load_pdf_from_file(&file_path, None)
@@ -146,7 +135,6 @@ fn render_page_to_base64(
         .get(page_index)
         .map_err(|e| format!("Failed to get page {}: {:?}", page_index, e))?;
 
-    // Render the page at the specified scale (default 1.0)
     let scale_factor = scale.unwrap_or(1.0);
     let render_config = PdfRenderConfig::new()
         .set_target_width((page.width().value * scale_factor) as i32)
@@ -156,7 +144,6 @@ fn render_page_to_base64(
         .render_with_config(&render_config)
         .map_err(|e| format!("Failed to render page: {:?}", e))?;
 
-    // Convert to PNG bytes
     let image = bitmap.as_image();
     let image_buffer = image
         .as_rgba8()
@@ -170,8 +157,6 @@ fn render_page_to_base64(
         )
         .map_err(|e| format!("Failed to encode PNG: {:?}", e))?;
 
-    // Encode as base64
-    use base64::Engine;
     let base64_string = base64::engine::general_purpose::STANDARD.encode(&png_bytes);
 
     Ok(format!("data:image/png;base64,{}", base64_string))
