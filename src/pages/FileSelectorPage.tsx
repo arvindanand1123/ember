@@ -1,6 +1,4 @@
 import { open } from '@tauri-apps/plugin-dialog';
-import { invoke } from '@tauri-apps/api/core';
-import { convertFileSrc } from '@tauri-apps/api/core';
 import { FileSelector, SelectFileButton } from '../components';
 
 interface FileSelectorPageProps {
@@ -20,10 +18,7 @@ export default function FileSelectorPage({ onFileSelected }: FileSelectorPagePro
 
       if (selected) {
         console.log('Selected file:', selected);
-        const response = await invoke<string>('load_pdf', { filePath: selected });
-        console.log('Response from Rust:', response);
-        const url = convertFileSrc(selected);
-        onFileSelected(url);
+        onFileSelected(selected);
       }
     } catch (error) {
       console.error('Error selecting file:', error);

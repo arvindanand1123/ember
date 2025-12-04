@@ -1,23 +1,20 @@
 import { useState } from 'react';
-import { pdfjs } from 'react-pdf';
 import { ThemeProvider } from 'styled-components';
 import FileSelectorPage from './pages/FileSelectorPage';
 import PDFViewerPage from './pages/PDFViewerPage';
 import { GlobalStyles, theme, Container } from './components';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-
 function App() {
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [filePath, setFilePath] = useState<string | null>(null);
 
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles/>
       <Container>
-        {!pdfUrl ? (
-          <FileSelectorPage onFileSelected={setPdfUrl}/>
+        {!filePath ? (
+          <FileSelectorPage onFileSelected={setFilePath}/>
         ) : (
-          <PDFViewerPage pdfUrl={pdfUrl} onBack={() => setPdfUrl(null)}/>
+          <PDFViewerPage filePath={filePath} onBack={() => setFilePath(null)}/>
         )}
       </Container>
     </ThemeProvider>

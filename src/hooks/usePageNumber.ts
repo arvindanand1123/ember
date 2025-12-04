@@ -1,6 +1,4 @@
 import { useRef } from 'react';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
 
 export function usePageNumber() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -12,7 +10,7 @@ export function usePageNumber() {
       return 1;
     }
 
-    const pages = container.querySelectorAll('.react-pdf__Page');
+    const pages = container.querySelectorAll('.pdf-page');
 
     const containerTop = container.scrollTop;
     const containerHeight = container.clientHeight;
