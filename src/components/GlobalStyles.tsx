@@ -76,26 +76,13 @@ export const GlobalStyles = createGlobalStyle`
     background-color: ${({ theme }) => theme.colors.selection};
   }
 
-  .react-pdf__Page {
+  .pdf-page {
     position: relative;
-    user-select: text;
-    -webkit-user-select: text;
     box-shadow: ${({ theme }) => theme.shadows.lg};
   }
 
-  .react-pdf__Page__canvas {
+  .pdf-page img {
     max-width: 100%;
-    height: auto !important;
-  }
-
-  .react-pdf__Page__textContent {
-    user-select: text !important;
-    -webkit-user-select: text !important;
-  }
-
-  .highlight-overlay {
-    position: absolute;
-    pointer-events: none;
-    z-index: 1;
+    height: auto;
   }
 `;

@@ -4,11 +4,11 @@ import PDFDocumentViewer from '../components/PDFDocument';
 import { CommandInput, PDFViewer } from '../components';
 
 interface PDFViewerPageProps {
-  pdfUrl: string;
+  filePath: string;
   onBack: () => void;
 }
 
-export default function PDFViewerPage({ pdfUrl, onBack }: PDFViewerPageProps) {
+export default function PDFViewerPage({ filePath, onBack }: PDFViewerPageProps) {
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -24,7 +24,7 @@ export default function PDFViewerPage({ pdfUrl, onBack }: PDFViewerPageProps) {
         onBack={onBack}
       />
       <PDFDocumentViewer
-        pdfUrl={pdfUrl}
+        filePath={filePath}
         numPages={numPages}
         onDocumentLoadSuccess={onDocumentLoadSuccess}
         onPageChange={setCurrentPage}
