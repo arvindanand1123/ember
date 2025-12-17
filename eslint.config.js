@@ -5,6 +5,8 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
+import unusedImports from 'eslint-plugin-unused-imports';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default [
   { ignores: ['dist', 'src-tauri'] },
@@ -34,6 +36,8 @@ export default [
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       '@typescript-eslint': tseslint,
+      'unused-imports': unusedImports,
+      'simple-import-sort': simpleImportSort,
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -43,7 +47,11 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': 'off',
+      'unused-imports/no-unused-imports': 'error',
+      'unused-imports/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
