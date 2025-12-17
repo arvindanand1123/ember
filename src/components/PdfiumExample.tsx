@@ -1,6 +1,7 @@
-import { useState } from 'react';
 import { open } from '@tauri-apps/plugin-dialog';
-import { usePdfium, type PdfMetadata } from '../hooks/usePdfium';
+import { useState } from 'react';
+
+import { type PdfMetadata, usePdfium } from '../hooks/usePdfium';
 
 export function PdfiumExample() {
   const { loadPdf, renderPageToBase64, loading, error } = usePdfium();

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+
 import { useHandleKeyDown } from '../hooks/useHandleKeyDown';
 
 const CommandInputContainer = styled.div`
