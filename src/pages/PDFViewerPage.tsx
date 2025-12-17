@@ -1,7 +1,8 @@
 import { useState } from 'react';
+
+import { CommandInput, PDFViewer } from '../components';
 import PDFControls from '../components/PDFControls';
 import PDFDocumentViewer from '../components/PDFDocument';
-import { CommandInput, PDFViewer } from '../components';
 
 interface PDFViewerPageProps {
   filePath: string;

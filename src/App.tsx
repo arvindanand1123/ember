@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { ThemeProvider } from 'styled-components';
+
+import { Container, GlobalStyles, theme } from './components';
 import FileSelectorPage from './pages/FileSelectorPage';
 import PDFViewerPage from './pages/PDFViewerPage';
-import { GlobalStyles, theme, Container } from './components';
 
 function App() {
   const [filePath, setFilePath] = useState<string | null>(null);
