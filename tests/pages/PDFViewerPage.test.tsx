@@ -1,7 +1,7 @@
 import { clearMocks } from '@tauri-apps/api/mocks';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, assert, beforeEach, describe, it, vi } from 'vitest';
 
 import { theme } from '../../src/components/theme';
 import PDFViewerPage from '../../src/pages/PDFViewerPage';
@@ -17,14 +17,13 @@ afterEach(() => {
 
 describe('PDFViewerPage', () => {
   it('basic', async () => {
-    const mockOnBack = vi.fn();
-
     render(
       <ThemeProvider theme={theme}>
-        <PDFViewerPage filePath="/test/path.pdf" onBack={mockOnBack}/>
+        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={vi.fn()}/>
       </ThemeProvider>,
     );
+    assert(await screen.findByText('Loading PDF...'));
+    assert(await screen.findByText('Page 1 of 1'));
 
-    expect(await screen.findByText('Loading PDF...')).toBeTruthy();
   });
 });
