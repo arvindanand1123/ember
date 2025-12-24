@@ -26,4 +26,17 @@ describe('PDFViewerPage', () => {
     assert(await screen.findByText('Loading PDF...'));
     assert(await screen.findByText('Page 1 of 1'));
   });
+
+  it('document', async () => {
+    render(
+      <ThemeProvider theme={theme}>
+        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={() => {}}/>
+      </ThemeProvider>,
+    );
+    const image = await screen.findByAltText('Page 1');
+    const pdfPage = image.closest('.pdf-page');
+    assert(pdfPage);
+    const images = pdfPage.querySelectorAll('img');
+    assert(images.length === 1);
+  });
 });

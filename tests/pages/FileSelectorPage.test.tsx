@@ -26,12 +26,4 @@ describe('FileSelectorPage', () => {
     );
     await clickButton('Select File');
   });
-  it('back', async () => {
-    const back = vi.fn();
-    render(
-      <ThemeProvider theme={theme}>
-        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={back}/>
-      </ThemeProvider>,
-    );
-    await clickButton('Back');
 });
