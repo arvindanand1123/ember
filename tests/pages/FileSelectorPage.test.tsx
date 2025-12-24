@@ -1,18 +1,19 @@
 import { clearMocks } from '@tauri-apps/api/mocks';
-import { render, screen  } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { cleanup, render } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
-import { afterEach, beforeEach, describe, it,  vi } from 'vitest';
+import { afterEach, beforeEach, describe, it } from 'vitest';
 
 import { theme } from '../../src/components/theme';
 import FileSelectorPage from '../../src/pages/FileSelectorPage';
 import { setupTauriMocks } from '../mocks';
+import { clickButton } from '../utils';
 
 beforeEach(() => {
   setupTauriMocks();
 });
 
 afterEach(() => {
+  cleanup();
   clearMocks();
 });
 
@@ -20,12 +21,17 @@ describe('FileSelectorPage', () => {
   it('basic', async () => {
     render(
       <ThemeProvider theme={theme}>
-        <FileSelectorPage onFileSelected={vi.fn()}/>
+        <FileSelectorPage onFileSelected={() => {}}/>
       </ThemeProvider>,
     );
-
-    const user = userEvent.setup();
-    const button = screen.getByText('Select File');
-    await user.click(button);
+    await clickButton('Select File');
   });
+  it('back', async () => {
+    const back = vi.fn();
+    render(
+      <ThemeProvider theme={theme}>
+        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={back}/>
+      </ThemeProvider>,
+    );
+    await clickButton('Back');
 });
