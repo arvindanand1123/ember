@@ -1,7 +1,7 @@
 import { mockIPC } from '@tauri-apps/api/mocks';
 import { readFile } from 'fs/promises';
 
-export function setupTauriMocks() {
+export function setupTauriMocks(dialogFilePath: string | null = null) {
 
   mockIPC(async (cmd, payload) => {
     let filePath: string | null;
@@ -21,7 +21,7 @@ export function setupTauriMocks() {
       file = null;
     }
     if (cmd === 'plugin:dialog|open') {
-      return filePath;
+      return dialogFilePath;
     } else if (cmd === 'load_pdf') {
       return { page_count: 1, title: 'Title' };
     } else if (cmd === 'render_page_to_base64') {
