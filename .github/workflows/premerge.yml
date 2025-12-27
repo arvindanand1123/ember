@@ -1,9 +1,7 @@
-name: CI
+name: Premerge
 
 on:
   pull_request:
-    branches: [main]
-  push:
     branches: [main]
 
 concurrency:
@@ -11,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci:
+  premerge:
     name: Lint & Test
     runs-on: macos-latest
     steps:
