@@ -38,7 +38,7 @@ export default function PDFDocumentViewer({
     };
 
     loadAndRenderPdf();
-  }, []);
+  }, [filePath, loadPdf, onDocumentLoadSuccess, renderPageToBase64, setRenderedPages]);
 
   if (error) {
     return <div style={{ color: 'red', padding: '20px' }}>Error: {error}</div>;

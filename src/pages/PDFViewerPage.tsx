@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { CommandInput, PDFViewer } from '../components';
 import PDFControls from '../components/PDFControls';
@@ -13,9 +13,10 @@ export default function PDFViewerPage({ filePath, onBack }: PDFViewerPageProps) 
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+  // function needs to be stable
+  const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
-  };
+  }, [setNumPages]);
 
   return (
     <PDFViewer>
