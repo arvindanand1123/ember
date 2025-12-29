@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 
+import { usePdfBackend } from '../context/PdfBackendContext';
 import { usePageNumber } from '../hooks/usePageNumber';
 import { usePdfium } from '../hooks/usePdfium';
 import { PDFDocument } from './Container';
+import PDFKitViewer from './PDFKitViewer';
 
 interface PDFDocumentViewerProps {
   filePath: string;
@@ -16,6 +18,35 @@ export default function PDFDocumentViewer({
   onDocumentLoadSuccess,
   onPageChange,
 }: PDFDocumentViewerProps) {
+  const { backend } = usePdfBackend();
+
+  // Use virtual scrolling viewer for PDFKit
+  if (backend === 'pdfkit') {
+    return (
+      <PDFKitViewer
+        filePath={filePath}
+        onDocumentLoadSuccess={onDocumentLoadSuccess}
+        onPageChange={onPageChange}
+      />
+    );
+  }
+
+  // Original PDFium viewer (renders all pages - fine for small docs)
+  return (
+    <PdfiumViewer
+      filePath={filePath}
+      onDocumentLoadSuccess={onDocumentLoadSuccess}
+      onPageChange={onPageChange}
+    />
+  );
+}
+
+// Original PDFium implementation
+function PdfiumViewer({
+  filePath,
+  onDocumentLoadSuccess,
+  onPageChange,
+}: Omit<PDFDocumentViewerProps, 'numPages'>) {
   const { containerRef, getCurrentPage } = usePageNumber();
   const { loadPdf, renderPageToBase64, loading, error } = usePdfium();
   const [renderedPages, setRenderedPages] = useState<(string | null)[]>([]);

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import { Container, GlobalStyles, theme } from './components';
+import { PdfBackendProvider } from './context/PdfBackendContext';
 import FileSelectorPage from './pages/FileSelectorPage';
 import PDFViewerPage from './pages/PDFViewerPage';
 
@@ -10,14 +11,16 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <GlobalStyles/>
-      <Container>
-        {!filePath ? (
-          <FileSelectorPage onFileSelected={setFilePath}/>
-        ) : (
-          <PDFViewerPage filePath={filePath} onBack={() => setFilePath(null)}/>
-        )}
-      </Container>
+      <PdfBackendProvider>
+        <GlobalStyles/>
+        <Container>
+          {!filePath ? (
+            <FileSelectorPage onFileSelected={setFilePath}/>
+          ) : (
+            <PDFViewerPage filePath={filePath} onBack={() => setFilePath(null)}/>
+          )}
+        </Container>
+      </PdfBackendProvider>
     </ThemeProvider>
   );
 }
