@@ -1,62 +1,16 @@
 import { listen } from '@tauri-apps/api/event';
 import { open } from '@tauri-apps/plugin-dialog';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
 
 import { FileSelector, SelectFileButton } from '../components';
-import { usePdfBackend, PdfBackend } from '../context/PdfBackendContext';
 
 interface FileSelectorPageProps {
   onFileSelected: (url: string) => void;
 }
 
-const BackendToggle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 32px;
-  padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-`;
-
-const ToggleLabel = styled.span`
-  font-size: 13px;
-  color: #888;
-`;
-
-const ToggleButton = styled.button<{ $active: boolean }>`
-  padding: 8px 16px;
-  font-size: 12px;
-  font-weight: 500;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  background: ${({ $active }) => $active ? '#4a9eff' : 'rgba(255, 255, 255, 0.1)'};
-  color: ${({ $active }) => $active ? '#fff' : '#888'};
-  
-  &:hover {
-    background: ${({ $active }) => $active ? '#3a8eef' : 'rgba(255, 255, 255, 0.15)'};
-  }
-  
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-`;
-
-const BackendBadge = styled.span`
-  font-size: 10px;
-  color: #666;
-  margin-left: 4px;
-`;
-
 export default function FileSelectorPage({ onFileSelected }: FileSelectorPageProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { backend, setBackend, isPdfKitAvailable } = usePdfBackend();
 
   useEffect(() => {
     const unlisten = listen<{ paths: string[] }>('tauri://drag-drop', (event) => {
@@ -139,26 +93,6 @@ export default function FileSelectorPage({ onFileSelected }: FileSelectorPagePro
             {error}
           </p>
         )}
-        
-        <BackendToggle>
-          <ToggleLabel>PDF Engine:</ToggleLabel>
-          <ToggleButton
-            $active={backend === 'pdfium'}
-            onClick={() => setBackend('pdfium')}
-          >
-            PDFium
-            <BackendBadge>(cross-platform)</BackendBadge>
-          </ToggleButton>
-          <ToggleButton
-            $active={backend === 'pdfkit'}
-            onClick={() => setBackend('pdfkit')}
-            disabled={!isPdfKitAvailable}
-            title={!isPdfKitAvailable ? 'PDFKit is only available on macOS' : ''}
-          >
-            PDFKit
-            <BackendBadge>(macOS native)</BackendBadge>
-          </ToggleButton>
-        </BackendToggle>
       </div>
     </FileSelector>
   );

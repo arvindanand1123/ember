@@ -12,7 +12,12 @@ fn main() {
 #[cfg(target_os = "macos")]
 fn build_swift() {
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    let swift_dir = manifest_dir.join("swift");
+    let swift_dir = manifest_dir
+        .join("src")
+        .join("core")
+        .join("pdf")
+        .join("pdfkit")
+        .join("swift");
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
 
     let profile = env::var("PROFILE").unwrap_or_else(|_| "debug".to_string());
@@ -22,8 +27,8 @@ fn build_swift() {
         "debug"
     };
 
-    println!("cargo:rerun-if-changed=swift/Sources/PDFBridge/PDFBridge.swift");
-    println!("cargo:rerun-if-changed=swift/Package.swift");
+    println!("cargo:rerun-if-changed=src/core/pdf/pdfkit/swift/Sources/PDFBridge/PDFBridge.swift");
+    println!("cargo:rerun-if-changed=src/core/pdf/pdfkit/swift/Package.swift");
 
     println!("cargo:warning=Building Swift PDFBridge library...");
 

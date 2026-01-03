@@ -1,15 +1,10 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useState } from 'react';
 
-import { usePdfBackend, PdfBackend } from '../context/PdfBackendContext';
-
 export interface PdfMetadata {
   page_count: number;
   title?: string;
   author?: string;
-  subject?: string;
-  creator?: string;
-  producer?: string;
 }
 
 export interface PageInfo {
@@ -21,16 +16,12 @@ export interface PageInfo {
 export function usePdfium() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { backend } = usePdfBackend();
 
   const loadPdf = async (filePath: string): Promise<PdfMetadata | null> => {
     setLoading(true);
     setError(null);
     try {
-      const metadata = await invoke<PdfMetadata>('load_pdf', { 
-        filePath,
-        backend,
-      });
+      const metadata = await invoke<PdfMetadata>('load_pdf', { filePath });
       return metadata;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
@@ -51,7 +42,6 @@ export function usePdfium() {
       const pageInfo = await invoke<PageInfo>('get_page_info', {
         filePath,
         pageIndex,
-        backend,
       });
       return pageInfo;
     } catch (err) {
@@ -75,7 +65,6 @@ export function usePdfium() {
         filePath,
         pageIndex,
         scale,
-        backend,
       });
       return base64Image;
     } catch (err) {

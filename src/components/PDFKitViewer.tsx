@@ -1,18 +1,11 @@
 import { invoke } from '@tauri-apps/api/core';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-
-import { usePdfBackend } from '../context/PdfBackendContext';
 
 interface PDFKitViewerProps {
   filePath: string;
   onDocumentLoadSuccess: (info: { numPages: number }) => void;
   onPageChange: (page: number) => void;
-}
-
-interface PageDimensions {
-  width: number;
-  height: number;
 }
 
 interface PdfMetadata {
@@ -25,6 +18,12 @@ interface PageInfo {
   page_index: number;
   width: number;
   height: number;
+}
+
+interface PageData {
+  width: number;
+  height: number;
+  imageData: string | null;
 }
 
 const Container = styled.div`
@@ -71,201 +70,113 @@ const PageNumber = styled.div`
   font-size: 12px;
 `;
 
-const LoadingOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.3);
-`;
-
 const DISPLAY_SCALE = 1.0;
-const BUFFER_PAGES = 2;
 
 export default function PDFKitViewer({
   filePath,
   onDocumentLoadSuccess,
   onPageChange,
 }: PDFKitViewerProps) {
-  const { backend } = usePdfBackend();
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  const [pageCount, setPageCount] = useState(0);
-  const [pageDimensions, setPageDimensions] = useState<PageDimensions[]>([]);
-  const [renderedPages, setRenderedPages] = useState<Map<number, string>>(new Map());
-  const [visiblePages, setVisiblePages] = useState<Set<number>>(new Set([0]));
-  const [loadingPages, setLoadingPages] = useState<Set<number>>(new Set());
+  const [pages, setPages] = useState<PageData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  const pageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
-  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     const loadDocument = async () => {
       try {
-        const metadata = await invoke<PdfMetadata>('load_pdf', {
-          filePath,
-          backend,
-        });
+        setLoading(true);
         
-        setPageCount(metadata.page_count);
+        // Load metadata
+        const metadata = await invoke<PdfMetadata>('load_pdf', { filePath });
         onDocumentLoadSuccess({ numPages: metadata.page_count });
 
-        const dimensions: PageDimensions[] = [];
+        // Load all pages
+        const loadedPages: PageData[] = [];
+        
         for (let i = 0; i < metadata.page_count; i++) {
+          // Get page dimensions
           const pageInfo = await invoke<PageInfo>('get_page_info', {
             filePath,
             pageIndex: i,
-            backend,
           });
-          dimensions.push({
+
+          // Render page
+          const imageData = await invoke<string>('render_page_to_base64', {
+            filePath,
+            pageIndex: i,
+            scale: DISPLAY_SCALE,
+          });
+
+          loadedPages.push({
             width: pageInfo.width * DISPLAY_SCALE,
             height: pageInfo.height * DISPLAY_SCALE,
+            imageData,
           });
         }
-        setPageDimensions(dimensions);
+
+        setPages(loadedPages);
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
+      } finally {
+        setLoading(false);
       }
     };
 
     loadDocument();
-  }, [filePath, backend, onDocumentLoadSuccess]);
+  }, [filePath, onDocumentLoadSuccess]);
 
+  // Track scroll position for page change callback
   useEffect(() => {
-    if (pageCount === 0) return;
+    const container = containerRef.current;
+    if (!container || pages.length === 0) return;
 
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        const newVisible = new Set(visiblePages);
-        let changed = false;
+    const handleScroll = () => {
+      const containerRect = container.getBoundingClientRect();
+      const containerCenter = containerRect.top + containerRect.height / 2;
 
-        entries.forEach((entry) => {
-          const pageIndex = parseInt(entry.target.getAttribute('data-page') || '0', 10);
-          
-          if (entry.isIntersecting) {
-            newVisible.add(pageIndex);
-            changed = true;
-          } else {
-            newVisible.delete(pageIndex);
-            changed = true;
-          }
-        });
-
-        if (changed) {
-          setVisiblePages(newVisible);
-          
-          const sortedVisible = Array.from(newVisible).sort((a, b) => a - b);
-          if (sortedVisible.length > 0) {
-            onPageChange(sortedVisible[0] + 1);
-          }
-        }
-      },
-      {
-        root: containerRef.current,
-        rootMargin: '200px 0px',
-        threshold: 0.1,
-      }
-    );
-
-    return () => {
-      observerRef.current?.disconnect();
-    };
-  }, [pageCount, onPageChange]);
-
-  const setPageRef = useCallback((index: number, element: HTMLDivElement | null) => {
-    if (element) {
-      pageRefs.current.set(index, element);
-      observerRef.current?.observe(element);
-    } else {
-      const existing = pageRefs.current.get(index);
-      if (existing) {
-        observerRef.current?.unobserve(existing);
-        pageRefs.current.delete(index);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    const pagesToRender = new Set<number>();
-    
-    visiblePages.forEach((pageIndex) => {
-      pagesToRender.add(pageIndex);
+      let currentPage = 1;
+      const pageElements = container.querySelectorAll('[data-page]');
       
-      for (let i = 1; i <= BUFFER_PAGES; i++) {
-        if (pageIndex - i >= 0) pagesToRender.add(pageIndex - i);
-        if (pageIndex + i < pageCount) pagesToRender.add(pageIndex + i);
-      }
-    });
+      pageElements.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= containerCenter) {
+          currentPage = parseInt(el.getAttribute('data-page') || '0', 10) + 1;
+        }
+      });
 
-    pagesToRender.forEach(async (pageIndex) => {
-      if (renderedPages.has(pageIndex) || loadingPages.has(pageIndex)) {
-        return;
-      }
+      onPageChange(currentPage);
+    };
 
-      setLoadingPages((prev) => new Set(prev).add(pageIndex));
-
-      try {
-        const base64 = await invoke<string>('render_page_to_base64', {
-          filePath,
-          pageIndex,
-          scale: DISPLAY_SCALE,
-          backend,
-        });
-
-        setRenderedPages((prev) => new Map(prev).set(pageIndex, base64));
-      } catch (err) {
-        console.error(`Failed to render page ${pageIndex}:`, err);
-      } finally {
-        setLoadingPages((prev) => {
-          const next = new Set(prev);
-          next.delete(pageIndex);
-          return next;
-        });
-      }
-    });
-  }, [visiblePages, pageCount, filePath, backend, renderedPages, loadingPages]);
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [pages, onPageChange]);
 
   if (error) {
     return <div style={{ color: 'red', padding: '20px' }}>Error: {error}</div>;
   }
 
-  if (pageDimensions.length === 0) {
+  if (loading) {
     return <div style={{ padding: '20px' }}>Loading document...</div>;
   }
 
   return (
     <Container ref={containerRef}>
-      {pageDimensions.map((dims, index) => (
+      {pages.map((page, index) => (
         <PageContainer
           key={index}
-          ref={(el) => setPageRef(index, el)}
           data-page={index}
-          $width={dims.width}
-          $height={dims.height}
+          $width={page.width}
+          $height={page.height}
         >
-          {renderedPages.has(index) ? (
-            <PageImage
-              src={renderedPages.get(index)}
-              alt={`Page ${index + 1}`}
-            />
+          {page.imageData ? (
+            <PageImage src={page.imageData} alt={`Page ${index + 1}`} />
           ) : (
-            <PagePlaceholder>
-              {loadingPages.has(index) ? 'Rendering...' : `Page ${index + 1}`}
-            </PagePlaceholder>
+            <PagePlaceholder>Page {index + 1}</PagePlaceholder>
           )}
-          
-          {loadingPages.has(index) && (
-            <LoadingOverlay>
-              <PagePlaceholder>Rendering...</PagePlaceholder>
-            </LoadingOverlay>
-          )}
-          
           <PageNumber>{index + 1}</PageNumber>
         </PageContainer>
       ))}
     </Container>
   );
 }
-

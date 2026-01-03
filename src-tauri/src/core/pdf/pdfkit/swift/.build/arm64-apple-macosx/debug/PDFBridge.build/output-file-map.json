@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/Users/spuneti/Documents/Projects/phorgePDF/phorgePDF/src-tauri/src/core/pdf/pdfkit/swift/.build/arm64-apple-macosx/debug/PDFBridge.build/master.swiftdeps"
+  },
+  "/Users/spuneti/Documents/Projects/phorgePDF/phorgePDF/src-tauri/src/core/pdf/pdfkit/swift/Sources/PDFBridge/PDFBridge.swift": {
+    "dependencies": "/Users/spuneti/Documents/Projects/phorgePDF/phorgePDF/src-tauri/src/core/pdf/pdfkit/swift/.build/arm64-apple-macosx/debug/PDFBridge.build/PDFBridge.d",
+    "object": "/Users/spuneti/Documents/Projects/phorgePDF/phorgePDF/src-tauri/src/core/pdf/pdfkit/swift/.build/arm64-apple-macosx/debug/PDFBridge.build/PDFBridge.swift.o",
+    "swiftmodule": "/Users/spuneti/Documents/Projects/phorgePDF/phorgePDF/src-tauri/src/core/pdf/pdfkit/swift/.build/arm64-apple-macosx/debug/PDFBridge.build/PDFBridge~partial.swiftmodule",
+    "swift-dependencies": "/Users/spuneti/Documents/Projects/phorgePDF/phorgePDF/src-tauri/src/core/pdf/pdfkit/swift/.build/arm64-apple-macosx/debug/PDFBridge.build/PDFBridge.swiftdeps",
+    "diagnostics": "/Users/spuneti/Documents/Projects/phorgePDF/phorgePDF/src-tauri/src/core/pdf/pdfkit/swift/.build/arm64-apple-macosx/debug/PDFBridge.build/PDFBridge.dia"
+  }
+}
