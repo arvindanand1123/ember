@@ -80,9 +80,8 @@ const LoadingOverlay = styled.div`
   background: rgba(0, 0, 0, 0.3);
 `;
 
-// Scale for display (the actual render is 2x this for Retina)
 const DISPLAY_SCALE = 1.0;
-const BUFFER_PAGES = 2; // Pages to pre-render above/below viewport
+const BUFFER_PAGES = 2;
 
 export default function PDFKitViewer({
   filePath,
@@ -102,11 +101,9 @@ export default function PDFKitViewer({
   const pageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Load document metadata and page dimensions
   useEffect(() => {
     const loadDocument = async () => {
       try {
-        // Load metadata
         const metadata = await invoke<PdfMetadata>('load_pdf', {
           filePath,
           backend,
@@ -115,7 +112,6 @@ export default function PDFKitViewer({
         setPageCount(metadata.page_count);
         onDocumentLoadSuccess({ numPages: metadata.page_count });
 
-        // Load all page dimensions (this is fast, just metadata)
         const dimensions: PageDimensions[] = [];
         for (let i = 0; i < metadata.page_count; i++) {
           const pageInfo = await invoke<PageInfo>('get_page_info', {
@@ -137,7 +133,6 @@ export default function PDFKitViewer({
     loadDocument();
   }, [filePath, backend, onDocumentLoadSuccess]);
 
-  // Set up IntersectionObserver for lazy loading
   useEffect(() => {
     if (pageCount === 0) return;
 
@@ -153,7 +148,6 @@ export default function PDFKitViewer({
             newVisible.add(pageIndex);
             changed = true;
           } else {
-            // Keep rendered pages in cache, just track visibility
             newVisible.delete(pageIndex);
             changed = true;
           }
@@ -162,7 +156,6 @@ export default function PDFKitViewer({
         if (changed) {
           setVisiblePages(newVisible);
           
-          // Update current page (first visible)
           const sortedVisible = Array.from(newVisible).sort((a, b) => a - b);
           if (sortedVisible.length > 0) {
             onPageChange(sortedVisible[0] + 1);
@@ -171,7 +164,7 @@ export default function PDFKitViewer({
       },
       {
         root: containerRef.current,
-        rootMargin: '200px 0px', // Pre-load pages 200px before they're visible
+        rootMargin: '200px 0px',
         threshold: 0.1,
       }
     );
@@ -181,7 +174,6 @@ export default function PDFKitViewer({
     };
   }, [pageCount, onPageChange]);
 
-  // Observe page elements
   const setPageRef = useCallback((index: number, element: HTMLDivElement | null) => {
     if (element) {
       pageRefs.current.set(index, element);
@@ -195,22 +187,18 @@ export default function PDFKitViewer({
     }
   }, []);
 
-  // Render visible pages + buffer
   useEffect(() => {
     const pagesToRender = new Set<number>();
     
     visiblePages.forEach((pageIndex) => {
-      // Add visible page
       pagesToRender.add(pageIndex);
       
-      // Add buffer pages
       for (let i = 1; i <= BUFFER_PAGES; i++) {
         if (pageIndex - i >= 0) pagesToRender.add(pageIndex - i);
         if (pageIndex + i < pageCount) pagesToRender.add(pageIndex + i);
       }
     });
 
-    // Render pages that aren't already rendered or loading
     pagesToRender.forEach(async (pageIndex) => {
       if (renderedPages.has(pageIndex) || loadingPages.has(pageIndex)) {
         return;

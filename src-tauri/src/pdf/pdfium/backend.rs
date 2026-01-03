@@ -9,13 +9,11 @@ use crate::pdf::types::{PageInfo, PdfMetadata};
 const PDFIUM_LIB_NAME: &str = "libpdfium.dylib";
 const PDFIUM_DIR_NAME: &str = "libpdfium";
 
-/// PDFium-based PDF backend (cross-platform)
 pub struct PdfiumBackend {
     lib_path: Option<PathBuf>,
 }
 
 impl PdfiumBackend {
-    /// Create a new PdfiumBackend, determining the library path
     pub fn new<R: Runtime>(app_handle: &AppHandle<R>) -> Result<Self, PdfError> {
         let path = if let Ok(resource_dir) = app_handle.path().resource_dir() {
             let p = resource_dir.join(PDFIUM_DIR_NAME).join(PDFIUM_LIB_NAME);
@@ -30,7 +28,6 @@ impl PdfiumBackend {
         Ok(Self { lib_path: path })
     }
 
-    /// Load the Pdfium library
     fn load_pdfium(&self) -> Result<Pdfium, PdfError> {
         let bindings = if let Some(ref path) = self.lib_path {
             Pdfium::bind_to_library(path)
@@ -62,7 +59,6 @@ impl PdfBackend for PdfiumBackend {
     }
 }
 
-/// A PDF document opened with PDFium
 pub struct PdfiumDocument {
     path: String,
     lib_path: Option<PathBuf>,
@@ -70,7 +66,6 @@ pub struct PdfiumDocument {
 }
 
 impl PdfiumDocument {
-    /// Load Pdfium library
     fn load_pdfium(&self) -> Result<Pdfium, PdfError> {
         let bindings = if let Some(ref path) = self.lib_path {
             Pdfium::bind_to_library(path)
@@ -83,7 +78,6 @@ impl PdfiumDocument {
         Ok(Pdfium::new(bindings))
     }
 
-    /// Helper to open the document and perform an operation
     fn with_document<F, T>(&self, f: F) -> Result<T, PdfError>
     where
         F: FnOnce(&pdfium_render::prelude::PdfDocument<'_>) -> Result<T, PdfError>,
@@ -150,7 +144,6 @@ impl PdfDocumentTrait for PdfiumDocument {
     }
 }
 
-/// Extract metadata from a PDFium document
 fn extract_metadata(document: &pdfium_render::prelude::PdfDocument<'_>) -> PdfMetadata {
     PdfMetadata {
         page_count: document.pages().len(),

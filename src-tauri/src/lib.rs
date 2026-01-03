@@ -1,7 +1,6 @@
 use base64::Engine;
 use tauri::AppHandle;
 
-// PDF module with pluggable backends
 mod pdf;
 
 use pdf::{Backend, PageInfo, PdfMetadata};
@@ -57,7 +56,6 @@ fn render_page_to_base64(
     Ok(format!("data:image/png;base64,{}", base64_string))
 }
 
-/// Parse backend string to Backend enum, defaulting to Pdfium
 fn parse_backend(backend: Option<String>) -> Backend {
     backend
         .and_then(|s| s.parse().ok())

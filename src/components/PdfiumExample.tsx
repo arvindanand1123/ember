@@ -23,11 +23,9 @@ export function PdfiumExample() {
     if (file && typeof file === 'string') {
       setPdfPath(file);
 
-      // Load PDF metadata
       const meta = await loadPdf(file);
       setMetadata(meta);
 
-      // Optionally render the first page
       if (meta && meta.page_count > 0) {
         const base64 = await renderPageToBase64(file, 0, 1.5);
         setRenderedPage(base64);

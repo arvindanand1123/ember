@@ -17,7 +17,6 @@ pub struct PageInfo {
     pub height: f32,
 }
 
-/// Available PDF backends
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum Backend {

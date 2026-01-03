@@ -20,7 +20,6 @@ export default function PDFDocumentViewer({
 }: PDFDocumentViewerProps) {
   const { backend } = usePdfBackend();
 
-  // Use virtual scrolling viewer for PDFKit
   if (backend === 'pdfkit') {
     return (
       <PDFKitViewer
@@ -31,7 +30,6 @@ export default function PDFDocumentViewer({
     );
   }
 
-  // Original PDFium viewer (renders all pages - fine for small docs)
   return (
     <PdfiumViewer
       filePath={filePath}
@@ -41,7 +39,6 @@ export default function PDFDocumentViewer({
   );
 }
 
-// Original PDFium implementation
 function PdfiumViewer({
   filePath,
   onDocumentLoadSuccess,

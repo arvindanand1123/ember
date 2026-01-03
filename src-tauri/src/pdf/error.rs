@@ -2,13 +2,9 @@ use std::fmt;
 
 #[derive(Debug)]
 pub enum PdfError {
-    /// Failed to load the PDF file
     LoadError(String),
-    /// Failed to access a page (e.g., page index out of bounds)
     PageError(String),
-    /// Failed to render a page
     RenderError(String),
-    /// Backend-specific error
     BackendError(String),
 }
 
@@ -25,7 +21,6 @@ impl fmt::Display for PdfError {
 
 impl std::error::Error for PdfError {}
 
-// Convert to String for Tauri command results
 impl From<PdfError> for String {
     fn from(err: PdfError) -> Self {
         err.to_string()

@@ -18,10 +18,9 @@ export function PdfBackendProvider({ children }: { children: ReactNode }) {
     if (stored === 'pdfkit' || stored === 'pdfium') {
       return stored;
     }
-    return 'pdfium'; // Default to pdfium (cross-platform)
+    return 'pdfium';
   });
 
-  // PDFKit is only available on macOS
   const isPdfKitAvailable = navigator.platform.toLowerCase().includes('mac');
 
   const setBackend = (newBackend: PdfBackend) => {
@@ -29,7 +28,6 @@ export function PdfBackendProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, newBackend);
   };
 
-  // If PDFKit was selected but we're not on macOS, fall back to pdfium
   useEffect(() => {
     if (backend === 'pdfkit' && !isPdfKitAvailable) {
       setBackend('pdfium');

@@ -4,7 +4,6 @@ use crate::pdf::types::{PageInfo, PdfMetadata};
 
 use super::ffi::PdfHandle;
 
-/// PDFKit-based PDF backend (macOS only)
 pub struct PdfKitBackend;
 
 impl PdfKitBackend {
@@ -21,16 +20,15 @@ impl PdfBackend for PdfKitBackend {
             page_count: handle.page_count(),
             title: handle.title(),
             author: handle.author(),
-            subject: None, // Not implemented in Swift yet
-            creator: None, // Not implemented in Swift yet
-            producer: None, // Not implemented in Swift yet
+            subject: None,
+            creator: None,
+            producer: None,
         };
 
         Ok(Box::new(PdfKitDocument { handle, metadata }))
     }
 }
 
-/// A PDF document opened with PDFKit
 pub struct PdfKitDocument {
     handle: PdfHandle,
     metadata: PdfMetadata,

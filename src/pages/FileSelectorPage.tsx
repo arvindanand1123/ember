@@ -58,7 +58,6 @@ export default function FileSelectorPage({ onFileSelected }: FileSelectorPagePro
   const [error, setError] = useState<string | null>(null);
   const { backend, setBackend, isPdfKitAvailable } = usePdfBackend();
 
-  // Listen for Tauri file drop events
   useEffect(() => {
     const unlisten = listen<{ paths: string[] }>('tauri://drag-drop', (event) => {
       const paths = event.payload.paths;
