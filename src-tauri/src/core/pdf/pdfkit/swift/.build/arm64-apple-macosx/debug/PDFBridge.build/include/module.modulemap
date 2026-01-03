@@ -1,3 +1,0 @@
-module PDFBridge {
-    header "/Users/spuneti/Documents/Projects/phorgePDF/phorgePDF/src-tauri/src/core/pdf/pdfkit/swift/.build/arm64-apple-macosx/debug/PDFBridge.build/include/PDFBridge-Swift.h"
-}
