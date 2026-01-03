@@ -28,5 +28,5 @@ tmp
 src-tauri/target/
 
 # Swift build artifacts
-src-tauri/swift/.build/
-src-tauri/swift/.swiftpm/
+src-tauri/src/core/pdf/pdfkit/swift/.build/
+src-tauri/src/core/pdf/pdfkit/swift/.swiftpm/
