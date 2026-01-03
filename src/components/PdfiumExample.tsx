@@ -1,10 +1,10 @@
 import { open } from '@tauri-apps/plugin-dialog';
 import { useState } from 'react';
 
-import { type PdfMetadata, usePdfium } from '../hooks/usePdfium';
+import { type PdfMetadata, usePdf } from '../hooks/usePdf';
 
 export function PdfiumExample() {
-  const { loadPdf, renderPageToBase64, loading, error } = usePdfium();
+  const { loadPdf, renderPageToBase64, loading, error } = usePdf();
   const [pdfPath, setPdfPath] = useState<string | null>(null);
   const [metadata, setMetadata] = useState<PdfMetadata | null>(null);
   const [renderedPage, setRenderedPage] = useState<string | null>(null);
@@ -56,9 +56,6 @@ export function PdfiumExample() {
           <p><strong>Pages:</strong> {metadata.page_count}</p>
           {metadata.title && <p><strong>Title:</strong> {metadata.title}</p>}
           {metadata.author && <p><strong>Author:</strong> {metadata.author}</p>}
-          {metadata.subject && <p><strong>Subject:</strong> {metadata.subject}</p>}
-          {metadata.creator && <p><strong>Creator:</strong> {metadata.creator}</p>}
-          {metadata.producer && <p><strong>Producer:</strong> {metadata.producer}</p>}
 
           <div style={{ marginTop: '10px' }}>
             {Array.from({ length: metadata.page_count }, (_, i) => (

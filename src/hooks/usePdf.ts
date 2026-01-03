@@ -13,7 +13,7 @@ export interface PageInfo {
   height: number;
 }
 
-export function usePdfium() {
+export function usePdf() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
