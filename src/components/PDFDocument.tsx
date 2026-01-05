@@ -21,10 +21,12 @@ export default function PDFDocumentViewer({
   const [renderedPages, setRenderedPages] = useState<(string | null)[]>([]);
 
   const onDocumentLoadSuccessRef = useRef(onDocumentLoadSuccess);
-  onDocumentLoadSuccessRef.current = onDocumentLoadSuccess;
-
   const onPageChangeRef = useRef(onPageChange);
-  onPageChangeRef.current = onPageChange;
+
+  useEffect(() => {
+    onDocumentLoadSuccessRef.current = onDocumentLoadSuccess;
+    onPageChangeRef.current = onPageChange;
+  }, [onDocumentLoadSuccess, onPageChange]);
 
   const handleScroll = useCallback(() => {
     onPageChangeRef.current(getCurrentPage());
