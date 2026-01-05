@@ -1,9 +1,9 @@
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 export function usePageNumber() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const getCurrentPage = () => {
+  const getCurrentPage = useCallback(() => {
     const container = containerRef.current;
 
     if (!container) {
@@ -33,7 +33,7 @@ export function usePageNumber() {
     });
 
     return closestPage;
-  };
+  }, []);
 
   return { containerRef, getCurrentPage };
 }

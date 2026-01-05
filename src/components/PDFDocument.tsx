@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { usePageNumber } from '../hooks/usePageNumber';
 import { usePdfium } from '../hooks/usePdfium';
@@ -20,6 +20,16 @@ export default function PDFDocumentViewer({
   const { loadPdf, renderPageToBase64, loading, error } = usePdfium();
   const [renderedPages, setRenderedPages] = useState<(string | null)[]>([]);
 
+  const onDocumentLoadSuccessRef = useRef(onDocumentLoadSuccess);
+  onDocumentLoadSuccessRef.current = onDocumentLoadSuccess;
+
+  const onPageChangeRef = useRef(onPageChange);
+  onPageChangeRef.current = onPageChange;
+
+  const handleScroll = useCallback(() => {
+    onPageChangeRef.current(getCurrentPage());
+  }, [getCurrentPage]);
+
   useEffect(() => {
     const loadAndRenderPdf = async () => {
       if (!filePath) return;
@@ -27,7 +37,7 @@ export default function PDFDocumentViewer({
       const metadata = await loadPdf(filePath);
       if (!metadata) return;
 
-      onDocumentLoadSuccess({ numPages: metadata.page_count });
+      onDocumentLoadSuccessRef.current({ numPages: metadata.page_count });
 
       const pages: (string | null)[] = [];
       for (let i = 0; i < metadata.page_count; i++) {
@@ -38,7 +48,7 @@ export default function PDFDocumentViewer({
     };
 
     loadAndRenderPdf();
-  }, [filePath, loadPdf, onDocumentLoadSuccess, renderPageToBase64, setRenderedPages]);
+  }, [filePath, loadPdf, renderPageToBase64]);
 
   if (error) {
     return <div style={{ color: 'red', padding: '20px' }}>Error: {error}</div>;
@@ -49,7 +59,7 @@ export default function PDFDocumentViewer({
   }
 
   return (
-    <PDFDocument ref={containerRef} onScroll={() => onPageChange(getCurrentPage())}>
+    <PDFDocument ref={containerRef} onScroll={handleScroll}>
       <div>
         {renderedPages.map((pageBase64, index) => (
           <div key={`page_${index + 1}`} className="pdf-page">
