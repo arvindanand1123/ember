@@ -1,9 +1,42 @@
-import { describe, expect, it } from 'vitest';
+import { clearMocks } from '@tauri-apps/api/mocks';
+import { cleanup, render, screen } from '@testing-library/react';
+import { ThemeProvider } from 'styled-components';
+import { afterEach, assert, beforeEach, describe, it } from 'vitest';
 
+import { theme } from '../../src/components/theme';
 import PDFViewerPage from '../../src/pages/PDFViewerPage';
+import { setupTauriMocks } from '../mocks';
+
+beforeEach(() => {
+  setupTauriMocks();
+});
+
+afterEach(() => {
+  cleanup();
+  clearMocks();
+});
 
 describe('PDFViewerPage', () => {
-  it('basic', () => {
-    expect(PDFViewerPage).toBeDefined();
+  it('basic', async () => {
+    render(
+      <ThemeProvider theme={theme}>
+        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={() => {}}/>
+      </ThemeProvider>,
+    );
+    assert(await screen.findByText('Loading PDF...'));
+    assert(await screen.findByText('Page 1 of 1'));
+  });
+
+  it('document', async () => {
+    render(
+      <ThemeProvider theme={theme}>
+        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={() => {}}/>
+      </ThemeProvider>,
+    );
+    const image = await screen.findByAltText('Page 1');
+    const pdfPage = image.closest('.pdf-page');
+    assert(pdfPage);
+    const images = pdfPage.querySelectorAll('img');
+    assert(images.length === 1);
   });
 });

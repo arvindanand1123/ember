@@ -2,12 +2,12 @@ use base64::Engine;
 use pdfium_render::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use tauri::{AppHandle, Manager};
+use tauri::{AppHandle, Manager, Runtime};
 
 const PDFIUM_LIB_NAME: &str = "libpdfium.dylib";
 const PDFIUM_DIR_NAME: &str = "libpdfium";
 
-pub fn get_pdfium(app_handle: &AppHandle) -> Result<Pdfium, String> {
+pub fn get_pdfium<R: Runtime>(app_handle: &AppHandle<R>) -> Result<Pdfium, String> {
     let path;
     if let Ok(resource_dir) = app_handle.path().resource_dir() {
         path = resource_dir.join(PDFIUM_DIR_NAME).join(PDFIUM_LIB_NAME);
@@ -32,34 +32,24 @@ pub fn get_pdfium(app_handle: &AppHandle) -> Result<Pdfium, String> {
 
 #[derive(Serialize, Deserialize)]
 pub struct PdfMetadata {
-    page_count: u16,
-    title: Option<String>,
-    author: Option<String>,
-    subject: Option<String>,
-    creator: Option<String>,
-    producer: Option<String>,
+    pub page_count: u16,
+    pub title: Option<String>,
+    pub author: Option<String>,
+    pub subject: Option<String>,
+    pub creator: Option<String>,
+    pub producer: Option<String>,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct PageInfo {
-    page_index: u16,
-    width: f32,
-    height: f32,
+    pub page_index: u16,
+    pub width: f32,
+    pub height: f32,
 }
 
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
-#[tauri::command]
-fn load_pdf(app_handle: AppHandle, file_path: String) -> Result<PdfMetadata, String> {
-    println!("Loading PDF file: {}", file_path);
-
-    let pdfium = get_pdfium(&app_handle)?;
-
+pub fn load_pdf_metadata(pdfium: &Pdfium, file_path: &str) -> Result<PdfMetadata, String> {
     let document = pdfium
-        .load_pdf_from_file(&file_path, None)
+        .load_pdf_from_file(file_path, None)
         .map_err(|e| format!("Failed to load PDF: {:?}", e))?;
 
     let metadata = PdfMetadata {
@@ -86,20 +76,16 @@ fn load_pdf(app_handle: AppHandle, file_path: String) -> Result<PdfMetadata, Str
             .map(|t| t.value().to_string()),
     };
 
-    println!("PDF loaded successfully. Pages: {}", metadata.page_count);
     Ok(metadata)
 }
 
-#[tauri::command]
-fn get_page_info(
-    app_handle: AppHandle,
-    file_path: String,
+pub fn get_pdf_page_info(
+    pdfium: &Pdfium,
+    file_path: &str,
     page_index: u16,
 ) -> Result<PageInfo, String> {
-    let pdfium = get_pdfium(&app_handle)?;
-
     let document = pdfium
-        .load_pdf_from_file(&file_path, None)
+        .load_pdf_from_file(file_path, None)
         .map_err(|e| format!("Failed to load PDF: {:?}", e))?;
 
     let page = document
@@ -117,17 +103,14 @@ fn get_page_info(
     })
 }
 
-#[tauri::command]
-fn render_page_to_base64(
-    app_handle: AppHandle,
-    file_path: String,
+pub fn render_pdf_page_to_base64(
+    pdfium: &Pdfium,
+    file_path: &str,
     page_index: u16,
     scale: Option<f32>,
 ) -> Result<String, String> {
-    let pdfium = get_pdfium(&app_handle)?;
-
     let document = pdfium
-        .load_pdf_from_file(&file_path, None)
+        .load_pdf_from_file(file_path, None)
         .map_err(|e| format!("Failed to load PDF: {:?}", e))?;
 
     let page = document
@@ -162,13 +145,42 @@ fn render_page_to_base64(
     Ok(format!("data:image/png;base64,{}", base64_string))
 }
 
+#[tauri::command]
+fn load_pdf(app_handle: AppHandle, file_path: String) -> Result<PdfMetadata, String> {
+    println!("Loading PDF file: {}", file_path);
+    let pdfium = get_pdfium(&app_handle)?;
+    let metadata = load_pdf_metadata(&pdfium, &file_path)?;
+    println!("PDF loaded successfully. Pages: {}", metadata.page_count);
+    Ok(metadata)
+}
+
+#[tauri::command]
+fn get_page_info(
+    app_handle: AppHandle,
+    file_path: String,
+    page_index: u16,
+) -> Result<PageInfo, String> {
+    let pdfium = get_pdfium(&app_handle)?;
+    get_pdf_page_info(&pdfium, &file_path, page_index)
+}
+
+#[tauri::command]
+fn render_page_to_base64(
+    app_handle: AppHandle,
+    file_path: String,
+    page_index: u16,
+    scale: Option<f32>,
+) -> Result<String, String> {
+    let pdfium = get_pdfium(&app_handle)?;
+    render_pdf_page_to_base64(&pdfium, &file_path, page_index, scale)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
-            greet,
             load_pdf,
             get_page_info,
             render_page_to_base64
