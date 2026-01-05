@@ -13,7 +13,6 @@ export default function PDFViewerPage({ filePath, onBack }: PDFViewerPageProps) 
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // function needs to be stable
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   }, [setNumPages]);
