@@ -28,7 +28,7 @@ export default function FileSelectorPage({ onFileSelected }: FileSelectorPagePro
     });
 
     return () => {
-      unlisten.then(fn => fn());
+      unlisten.then(fn => fn()).catch(() => {});
     };
   }, [onFileSelected]);
 
