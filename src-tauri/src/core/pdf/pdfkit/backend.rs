@@ -45,13 +45,13 @@ impl PdfKitBackend {
 impl PdfBackend for PdfKitBackend {
     fn open(&self, path: &str) -> Result<Box<dyn PdfDocumentTrait>, PdfError> {
         let c_path =
-            CString::new(path).map_err(|e| PdfError::LoadError(format!("Invalid path: {}", e)))?;
+            CString::new(path).map_err(|e| PdfError::Load(format!("Invalid path: {}", e)))?;
         let mut error: i32 = 0;
 
         let handle = unsafe { pdf_open(c_path.as_ptr(), &mut error) };
 
         if handle == 0 || error != PDF_SUCCESS {
-            return Err(PdfError::LoadError(match error {
+            return Err(PdfError::Load(match error {
                 PDF_ERROR_INVALID_PATH => "Invalid path".to_string(),
                 PDF_ERROR_LOAD_FAILED => format!("Failed to load PDF: {}", path),
                 _ => format!("Unknown error: {}", error),
@@ -95,10 +95,7 @@ impl PdfDocumentTrait for PdfKitDocument {
         let height = unsafe { pdf_get_page_height(self.handle, page_index) };
 
         if width == 0.0 && height == 0.0 {
-            return Err(PdfError::PageError(format!(
-                "Page {} not found",
-                page_index
-            )));
+            return Err(PdfError::Page(format!("Page {} not found", page_index)));
         }
 
         Ok(PageInfo {
@@ -116,7 +113,7 @@ impl PdfDocumentTrait for PdfKitDocument {
             unsafe { pdf_render_page(self.handle, page_index, scale, &mut length, &mut error) };
 
         if data_ptr.is_null() || error != PDF_SUCCESS {
-            return Err(PdfError::RenderError(match error {
+            return Err(PdfError::Render(match error {
                 PDF_ERROR_NULL_HANDLE => "Invalid document handle".to_string(),
                 PDF_ERROR_PAGE_NOT_FOUND => format!("Page {} not found", page_index),
                 PDF_ERROR_RENDER_FAILED => "Render failed".to_string(),

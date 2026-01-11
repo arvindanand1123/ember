@@ -1,4 +1,4 @@
-mod core;
+pub mod core;
 mod endpoints;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
