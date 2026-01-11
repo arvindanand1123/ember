@@ -1,5 +1,4 @@
-import { BackButton } from './Button';
-import { ControlsLeft, PageInfo, PDFControlsContainer } from './PDFControls.styled';
+import { BackButton, ControlsLeft, PageInfo, PDFControlsContainer } from './styles';
 
 interface PDFControlsProps {
   currentPage: number;
