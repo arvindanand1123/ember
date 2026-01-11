@@ -1,6 +1,6 @@
 import { listen } from '@tauri-apps/api/event';
 import { open } from '@tauri-apps/plugin-dialog';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { FileSelector, SelectFileButton } from '../components';
 

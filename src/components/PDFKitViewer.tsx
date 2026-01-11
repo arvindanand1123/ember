@@ -86,14 +86,14 @@ export default function PDFKitViewer({
     const loadDocument = async () => {
       try {
         setLoading(true);
-        
+
         // Load metadata
         const metadata = await invoke<PdfMetadata>('load_pdf', { filePath });
         onDocumentLoadSuccess({ numPages: metadata.page_count });
 
         // Load all pages
         const loadedPages: PageData[] = [];
-        
+
         for (let i = 0; i < metadata.page_count; i++) {
           // Get page dimensions
           const pageInfo = await invoke<PageInfo>('get_page_info', {
@@ -137,7 +137,7 @@ export default function PDFKitViewer({
 
       let currentPage = 1;
       const pageElements = container.querySelectorAll('[data-page]');
-      
+
       pageElements.forEach((el) => {
         const rect = el.getBoundingClientRect();
         if (rect.top <= containerCenter) {
@@ -170,7 +170,7 @@ export default function PDFKitViewer({
           $height={page.height}
         >
           {page.imageData ? (
-            <PageImage src={page.imageData} alt={`Page ${index + 1}`} />
+            <PageImage src={page.imageData} alt={`Page ${index + 1}`}/>
           ) : (
             <PagePlaceholder>Page {index + 1}</PagePlaceholder>
           )}
