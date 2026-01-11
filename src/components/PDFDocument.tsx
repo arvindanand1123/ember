@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { usePageNumber } from '../hooks/usePageNumber';
 import { usePdfium } from '../hooks/usePdfium';
@@ -20,6 +20,10 @@ export default function PDFDocumentViewer({
   const { loadPdf, renderPageToBase64, loading, error } = usePdfium();
   const [renderedPages, setRenderedPages] = useState<(string | null)[]>([]);
 
+  const handleScroll = useCallback(() => {
+    onPageChange(getCurrentPage());
+  }, [getCurrentPage, onPageChange]);
+
   useEffect(() => {
     const loadAndRenderPdf = async () => {
       if (!filePath) return;
@@ -38,7 +42,7 @@ export default function PDFDocumentViewer({
     };
 
     loadAndRenderPdf();
-  }, []);
+  }, [filePath, loadPdf, onDocumentLoadSuccess, renderPageToBase64]);
 
   if (error) {
     return <div style={{ color: 'red', padding: '20px' }}>Error: {error}</div>;
@@ -49,7 +53,7 @@ export default function PDFDocumentViewer({
   }
 
   return (
-    <PDFDocument ref={containerRef} onScroll={() => onPageChange(getCurrentPage())}>
+    <PDFDocument ref={containerRef} onScroll={handleScroll}>
       <div>
         {renderedPages.map((pageBase64, index) => (
           <div key={`page_${index + 1}`} className="pdf-page">
