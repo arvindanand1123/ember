@@ -1,4 +1,5 @@
 import { open } from '@tauri-apps/plugin-dialog';
+import { useCallback } from 'react';
 
 import { FileSelector, SelectFileButton } from '../components';
 
@@ -7,7 +8,7 @@ interface FileSelectorPageProps {
 }
 
 export default function FileSelectorPage({ onFileSelected }: FileSelectorPageProps) {
-  const handleSelectFile = async () => {
+  const handleSelectFile = useCallback(async () => {
     try {
       const selected = await open({
         multiple: false,
@@ -24,7 +25,7 @@ export default function FileSelectorPage({ onFileSelected }: FileSelectorPagePro
     } catch (error) {
       console.error('Error selecting file:', error);
     }
-  };
+  }, [onFileSelected]);
 
   return (
     <FileSelector>

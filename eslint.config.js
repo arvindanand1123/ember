@@ -85,6 +85,14 @@ export default [
         afterOpening: 'never',
         beforeClosing: 'never',
       }],
+      "react/jsx-no-bind": [
+        "warn",
+        {
+          "allowArrowFunctions": false,
+          "allowFunctions": false,
+          "ignoreRefs": true
+        }
+      ],
       'react/self-closing-comp': ['error', { component: true, html: true }],
     },
   },
