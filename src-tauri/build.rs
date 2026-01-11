@@ -79,16 +79,10 @@ fn link_swift_stdlib() {
 
     if output.status.success() {
         let swift_path = String::from_utf8_lossy(&output.stdout).trim().to_string();
-        if let Some(toolchain_dir) = PathBuf::from(&swift_path)
-            .parent()
-            .and_then(|p| p.parent())
-        {
+        if let Some(toolchain_dir) = PathBuf::from(&swift_path).parent().and_then(|p| p.parent()) {
             let swift_lib_dir = toolchain_dir.join("lib").join("swift").join("macosx");
             if swift_lib_dir.exists() {
-                println!(
-                    "cargo:rustc-link-search=native={}",
-                    swift_lib_dir.display()
-                );
+                println!("cargo:rustc-link-search=native={}", swift_lib_dir.display());
             }
         }
     }

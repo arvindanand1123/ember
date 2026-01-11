@@ -139,5 +139,9 @@ unsafe fn get_optional_string(ptr: *mut c_char) -> Option<String> {
     }
     let s = CStr::from_ptr(ptr).to_string_lossy().into_owned();
     pdf_free_string(ptr);
-    if s.is_empty() { None } else { Some(s) }
+    if s.is_empty() {
+        None
+    } else {
+        Some(s)
+    }
 }

@@ -3,8 +3,8 @@ use std::path::PathBuf;
 use tauri::{AppHandle, Manager, Runtime};
 
 use crate::core::pdf::serializers::PdfError;
-use crate::core::pdf::traits::{PdfBackend, PdfDocumentTrait};
 use crate::core::pdf::serializers::{PageInfo, PdfMetadata};
+use crate::core::pdf::traits::{PdfBackend, PdfDocumentTrait};
 
 const PDFIUM_LIB_NAME: &str = "libpdfium.dylib";
 const PDFIUM_DIR_NAME: &str = "libpdfium";
@@ -17,12 +17,20 @@ impl PdfiumBackend {
     pub fn new<R: Runtime>(app_handle: &AppHandle<R>) -> Result<Self, PdfError> {
         let path = if let Ok(resource_dir) = app_handle.path().resource_dir() {
             let p = resource_dir.join(PDFIUM_DIR_NAME).join(PDFIUM_LIB_NAME);
-            if p.exists() { Some(p) } else { None }
+            if p.exists() {
+                Some(p)
+            } else {
+                None
+            }
         } else {
             let p = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
                 .join(PDFIUM_DIR_NAME)
                 .join(PDFIUM_LIB_NAME);
-            if p.exists() { Some(p) } else { None }
+            if p.exists() {
+                Some(p)
+            } else {
+                None
+            }
         };
 
         Ok(Self { lib_path: path })
@@ -30,11 +38,13 @@ impl PdfiumBackend {
 
     fn load_pdfium(&self) -> Result<Pdfium, PdfError> {
         let bindings = if let Some(ref path) = self.lib_path {
-            Pdfium::bind_to_library(path)
-                .map_err(|e| PdfError::BackendError(format!("Failed to load Pdfium from {:?}: {:?}", path, e)))?
+            Pdfium::bind_to_library(path).map_err(|e| {
+                PdfError::BackendError(format!("Failed to load Pdfium from {:?}: {:?}", path, e))
+            })?
         } else {
-            Pdfium::bind_to_system_library()
-                .map_err(|e| PdfError::BackendError(format!("Failed to load system Pdfium: {:?}", e)))?
+            Pdfium::bind_to_system_library().map_err(|e| {
+                PdfError::BackendError(format!("Failed to load system Pdfium: {:?}", e))
+            })?
         };
 
         Ok(Pdfium::new(bindings))
@@ -44,7 +54,7 @@ impl PdfiumBackend {
 impl PdfBackend for PdfiumBackend {
     fn open(&self, path: &str) -> Result<Box<dyn PdfDocumentTrait>, PdfError> {
         let pdfium = self.load_pdfium()?;
-        
+
         let document = pdfium
             .load_pdf_from_file(path, None)
             .map_err(|e| PdfError::LoadError(format!("{:?}", e)))?;
@@ -98,10 +108,9 @@ impl PdfDocumentTrait for PdfiumDocument {
 
     fn page_info(&self, page_index: u16) -> Result<PageInfo, PdfError> {
         self.with_document(|document| {
-            let page = document
-                .pages()
-                .get(page_index)
-                .map_err(|e| PdfError::PageError(format!("Failed to get page {}: {:?}", page_index, e)))?;
+            let page = document.pages().get(page_index).map_err(|e| {
+                PdfError::PageError(format!("Failed to get page {}: {:?}", page_index, e))
+            })?;
 
             Ok(PageInfo {
                 page_index,
@@ -113,10 +122,9 @@ impl PdfDocumentTrait for PdfiumDocument {
 
     fn render_page(&self, page_index: u16, scale: f32) -> Result<Vec<u8>, PdfError> {
         self.with_document(|document| {
-            let page = document
-                .pages()
-                .get(page_index)
-                .map_err(|e| PdfError::PageError(format!("Failed to get page {}: {:?}", page_index, e)))?;
+            let page = document.pages().get(page_index).map_err(|e| {
+                PdfError::PageError(format!("Failed to get page {}: {:?}", page_index, e))
+            })?;
 
             let render_config = PdfRenderConfig::new()
                 .set_target_width((page.width().value * scale) as i32)
@@ -127,9 +135,9 @@ impl PdfDocumentTrait for PdfiumDocument {
                 .map_err(|e| PdfError::RenderError(format!("Failed to render page: {:?}", e)))?;
 
             let image = bitmap.as_image();
-            let image_buffer = image
-                .as_rgba8()
-                .ok_or_else(|| PdfError::RenderError("Failed to convert bitmap to RGBA8".to_string()))?;
+            let image_buffer = image.as_rgba8().ok_or_else(|| {
+                PdfError::RenderError("Failed to convert bitmap to RGBA8".to_string())
+            })?;
 
             let mut png_bytes = Vec::new();
             image_buffer
