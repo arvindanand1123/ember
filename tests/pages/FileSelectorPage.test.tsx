@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, it } from 'vitest';
 import { theme } from '../../src/components/theme';
 import FileSelectorPage from '../../src/pages/FileSelectorPage';
 import { setupTauriMocks } from '../mocks';
-import { clickButton } from '../utils';
+import { clickButton, noop } from '../utils';
 
 beforeEach(() => {
   setupTauriMocks();
@@ -21,7 +21,7 @@ describe('FileSelectorPage', () => {
   it('basic', async () => {
     render(
       <ThemeProvider theme={theme}>
-        <FileSelectorPage onFileSelected={() => {}}/>
+        <FileSelectorPage onFileSelected={noop}/>
       </ThemeProvider>,
     );
     await clickButton('Select File');

@@ -1,13 +1,14 @@
 import { open } from '@tauri-apps/plugin-dialog';
 
 import { FileSelector, SelectFileButton } from '../components';
+import { useStable } from '../hooks/useStable';
 
 interface FileSelectorPageProps {
   onFileSelected: (url: string) => void;
 }
 
 export default function FileSelectorPage({ onFileSelected }: FileSelectorPageProps) {
-  const handleSelectFile = async () => {
+  const handleSelectFile = useStable(async () => {
     try {
       const selected = await open({
         multiple: false,
@@ -24,7 +25,7 @@ export default function FileSelectorPage({ onFileSelected }: FileSelectorPagePro
     } catch (error) {
       console.error('Error selecting file:', error);
     }
-  };
+  });
 
   return (
     <FileSelector>
