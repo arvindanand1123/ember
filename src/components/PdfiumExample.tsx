@@ -1,7 +1,8 @@
 import { open } from '@tauri-apps/plugin-dialog';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 
 import { type PdfMetadata, usePdfium } from '../hooks/usePdfium';
+import { useStable } from '../hooks/useStable';
 
 export function PdfiumExample() {
   const { loadPdf, renderPageToBase64, loading, error } = usePdfium();
@@ -9,7 +10,7 @@ export function PdfiumExample() {
   const [metadata, setMetadata] = useState<PdfMetadata | null>(null);
   const [renderedPage, setRenderedPage] = useState<string | null>(null);
 
-  const handleOpenPdf = useCallback(async () => {
+  const handleOpenPdf = useStable(async () => {
     const file = await open({
       multiple: false,
       filters: [
@@ -23,24 +24,22 @@ export function PdfiumExample() {
     if (file && typeof file === 'string') {
       setPdfPath(file);
 
-      // Load PDF metadata
       const meta = await loadPdf(file);
       setMetadata(meta);
 
-      // Optionally render the first page
       if (meta && meta.page_count > 0) {
         const base64 = await renderPageToBase64(file, 0, 1.5);
         setRenderedPage(base64);
       }
     }
-  }, [loadPdf, renderPageToBase64]);
+  });
 
-  const handleRenderPage = useCallback(async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleRenderPage = useStable(async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!pdfPath) return;
     const pageIndex = Number(e.currentTarget.dataset.pageIndex);
     const base64 = await renderPageToBase64(pdfPath, pageIndex, 1.5);
     setRenderedPage(base64);
-  }, [pdfPath, renderPageToBase64]);
+  });
 
   return (
     <div style={{ padding: '20px' }}>
