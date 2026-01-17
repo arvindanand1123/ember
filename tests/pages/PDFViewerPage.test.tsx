@@ -6,6 +6,7 @@ import { afterEach, assert, beforeEach, describe, it } from 'vitest';
 import { theme } from '../../src/components/theme';
 import PDFViewerPage from '../../src/pages/PDFViewerPage';
 import { setupTauriMocks } from '../mocks';
+import { noop } from '../utils';
 
 beforeEach(() => {
   setupTauriMocks();
@@ -20,7 +21,7 @@ describe('PDFViewerPage', () => {
   it('basic', async () => {
     render(
       <ThemeProvider theme={theme}>
-        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={() => {}}/>
+        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={noop}/>
       </ThemeProvider>,
     );
     assert(await screen.findByText('Loading document...'));
@@ -30,7 +31,7 @@ describe('PDFViewerPage', () => {
   it('document', async () => {
     render(
       <ThemeProvider theme={theme}>
-        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={() => {}}/>
+        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={noop}/>
       </ThemeProvider>,
     );
     const image = await screen.findByAltText('Page 1');

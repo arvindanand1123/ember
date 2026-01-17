@@ -1,8 +1,9 @@
 import { listen } from '@tauri-apps/api/event';
 import { open } from '@tauri-apps/plugin-dialog';
-import { useEffect, useState } from 'react';
+import { DragEvent, useEffect, useState } from 'react';
 
 import { ErrorText, FileSelector, HintText, SelectFileButton } from '../components';
+import { useStable } from '../hooks/useStable';
 
 interface FileSelectorPageProps {
   onFileSelected: (url: string) => void;
@@ -30,7 +31,7 @@ export default function FileSelectorPage({ onFileSelected }: FileSelectorPagePro
     return () => unlisten?.();
   }, [onFileSelected]);
 
-  const handleSelectFile = async () => {
+  const handleSelectFile = useStable(async () => {
     try {
       setError(null);
       const selected = await open({
@@ -49,14 +50,29 @@ export default function FileSelectorPage({ onFileSelected }: FileSelectorPagePro
       console.error('Error selecting file:', err);
       setError('File picker unavailable on macOS Tahoe. Please drag & drop a PDF.');
     }
-  };
+  });
+
+  const handleDragOver = useStable((e: DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  });
+
+  const handleDragLeave = useStable((e: DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  });
+
+  const handleDrop = useStable((e: DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  });
 
   return (
     <FileSelector
       $isDragging={isDragging}
-      onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-      onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
-      onDrop={(e) => { e.preventDefault(); setIsDragging(false); }}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
     >
       <SelectFileButton onClick={handleSelectFile}>
         Select File
