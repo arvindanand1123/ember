@@ -58,7 +58,6 @@ export default [
       'prefer-const': 'error',
       'no-var': 'error',
 
-      // Formatting rules
       'indent': ['error', 2, { SwitchCase: 1 }],
       'quotes': ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
       'semi': ['error', 'always'],
@@ -78,7 +77,6 @@ export default [
       'brace-style': ['error', '1tbs', { allowSingleLine: true }],
       'key-spacing': ['error', { beforeColon: false, afterColon: true }],
 
-      // JSX formatting rules
       'react/jsx-tag-spacing': ['error', {
         closingSlash: 'never',
         beforeSelfClosing: 'never',

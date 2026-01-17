@@ -1,69 +1,120 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { usePageNumber } from '../hooks/usePageNumber';
-import { usePdfium } from '../hooks/usePdfium';
-import { PDFDocument } from './Container';
+import { usePdf } from '../hooks/usePdf';
+import { PDFDocumentContainer, PDFPage, PDFPageNumber } from './styles';
 
-interface PDFDocumentViewerProps {
+interface PDFDocumentProps {
   filePath: string;
-  numPages: number;
-  onDocumentLoadSuccess: ({ numPages }: { numPages: number }) => void;
+  onDocumentLoadSuccess: (info: { numPages: number }) => void;
   onPageChange: (page: number) => void;
 }
 
-export default function PDFDocumentViewer({
+interface PageData {
+  index: number;
+  width: number;
+  height: number;
+  imageData: string;
+}
+
+interface PdfData {
+  pageCount: number;
+  title?: string;
+  author?: string;
+  pages: PageData[];
+}
+
+const DISPLAY_SCALE = 1.0;
+
+export default function PDFDocument({
   filePath,
   onDocumentLoadSuccess,
   onPageChange,
-}: PDFDocumentViewerProps) {
-  const { containerRef, getCurrentPage } = usePageNumber();
-  const { loadPdf, renderPageToBase64, loading, error } = usePdfium();
-  const [renderedPages, setRenderedPages] = useState<(string | null)[]>([]);
-
-  const handleScroll = useCallback(() => {
-    onPageChange(getCurrentPage());
-  }, [getCurrentPage, onPageChange]);
+}: PDFDocumentProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [pdfData, setPdfData] = useState<PdfData | null>(null);
+  const { loadPdf, getPageInfo, renderPageToBase64, loading, error } = usePdf();
 
   useEffect(() => {
-    const loadAndRenderPdf = async () => {
-      if (!filePath) return;
-
+    const loadDocument = async () => {
       const metadata = await loadPdf(filePath);
       if (!metadata) return;
 
       onDocumentLoadSuccess({ numPages: metadata.page_count });
 
-      const pages: (string | null)[] = [];
+      const pages: PageData[] = [];
+
       for (let i = 0; i < metadata.page_count; i++) {
-        const base64 = await renderPageToBase64(filePath, i, 1.5);
-        pages.push(base64);
+        const pageInfo = await getPageInfo(filePath, i);
+        if (!pageInfo) continue;
+
+        const imageData = await renderPageToBase64(filePath, i, DISPLAY_SCALE);
+        if (!imageData) continue;
+
+        pages.push({
+          index: i,
+          width: pageInfo.width * DISPLAY_SCALE,
+          height: pageInfo.height * DISPLAY_SCALE,
+          imageData,
+        });
       }
-      setRenderedPages(pages);
+
+      setPdfData({
+        pageCount: metadata.page_count,
+        title: metadata.title,
+        author: metadata.author,
+        pages,
+      });
     };
 
-    loadAndRenderPdf();
-  }, [filePath, loadPdf, onDocumentLoadSuccess, renderPageToBase64]);
+    loadDocument();
+  }, [filePath, onDocumentLoadSuccess, loadPdf, getPageInfo, renderPageToBase64]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !pdfData) return;
+
+    const handleScroll = () => {
+      const containerRect = container.getBoundingClientRect();
+      const containerCenter = containerRect.top + containerRect.height / 2;
+
+      let currentPage = 1;
+      const pageElements = container.querySelectorAll('[data-page]');
+
+      pageElements.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= containerCenter) {
+          currentPage = parseInt(el.getAttribute('data-page') || '0', 10) + 1;
+        }
+      });
+
+      onPageChange(currentPage);
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [pdfData, onPageChange]);
 
   if (error) {
     return <div style={{ color: 'red', padding: '20px' }}>Error: {error}</div>;
   }
 
-  if (loading && renderedPages.length === 0) {
-    return <div style={{ padding: '20px' }}>Loading PDF...</div>;
+  if (loading || !pdfData) {
+    return <div style={{ padding: '20px' }}>Loading document...</div>;
   }
 
   return (
-    <PDFDocument ref={containerRef} onScroll={handleScroll}>
-      <div>
-        {renderedPages.map((pageBase64, index) => (
-          <div key={`page_${index + 1}`} className="pdf-page">
-            <img
-              src={pageBase64 || ''}
-              alt={`Page ${index + 1}`}
-            />
-          </div>
-        ))}
-      </div>
-    </PDFDocument>
+    <PDFDocumentContainer ref={containerRef}>
+      {pdfData.pages.map((page) => (
+        <PDFPage
+          key={page.index}
+          data-page={page.index}
+          $width={page.width}
+          $height={page.height}
+        >
+          <img src={page.imageData} alt={`Page ${page.index + 1}`}/>
+          <PDFPageNumber>{page.index + 1}</PDFPageNumber>
+        </PDFPage>
+      ))}
+    </PDFDocumentContainer>
   );
 }

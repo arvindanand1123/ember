@@ -1,4 +1,3 @@
-
 # Logs
 logs
 *.log
@@ -24,3 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 tmp
+
+# Rust/Tauri build artifacts
+src-tauri/target/
+
+# Swift build artifacts
+src-tauri/src/core/pdf/pdfkit/swift/.build/
+src-tauri/src/core/pdf/pdfkit/swift/.swiftpm/

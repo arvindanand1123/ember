@@ -5,9 +5,6 @@ export interface PdfMetadata {
   page_count: number;
   title?: string;
   author?: string;
-  subject?: string;
-  creator?: string;
-  producer?: string;
 }
 
 export interface PageInfo {
@@ -16,7 +13,7 @@ export interface PageInfo {
   height: number;
 }
 
-export function usePdfium() {
+export function usePdf() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
