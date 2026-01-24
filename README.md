@@ -1,11 +1,11 @@
 # phorgePDF
-Adobe pdf software sucks. All I want to do is view a pdf, add some text to it, and add signatures - all while using a non-clunky and choppy app. This is why I built phorgePDF - a lightweight pdf editor.
+[Charter](https://www.notion.so/Charter-2d98e8006a5080afa056c6cfe124c97c?source=copy_link)
 
 ## Prerequisites
 
 Before installing phorgePDF, ensure you have the following installed:
 
-- **Node.js** (20 or higher) - [Download here](https://nodejs.org/)
+- **Node.js** (20 or higher)
 - **pnpm** - Install with: `npm install -g pnpm`
 - **Rust** (latest stable)
 
