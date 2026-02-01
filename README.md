@@ -37,6 +37,12 @@ This will start the Vite dev server and launch the Tauri app.
 
 Code checked into the repo must be linted and formatted:
 
+### Frontend
 - `pnpm lint` - Run ESLint and auto-fix issues
 - `pnpm lint:check` - Check for linting issues without fixing
-- TBD for rust
+
+### Rust (run from `src-tauri/`)
+- `cargo fmt` - Auto-format code
+- `cargo fmt-check` - Check code formatting
+- `cargo lint` - Run clippy (warnings treated as errors)
+- `cargo test` - Run tests
