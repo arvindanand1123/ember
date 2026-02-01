@@ -7,7 +7,7 @@ import { setupTauriMocks } from '../mocks';
 import { clickButton } from '../utils';
 
 beforeEach(() => {
-  setupTauriMocks('../phorgePDF/tests/basic.pdf');
+  setupTauriMocks('../ember/tests/basic.pdf');
 });
 
 afterEach(() => {
