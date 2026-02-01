@@ -197,10 +197,8 @@ export const zIndex = {
   toast: 60,
 } as const;
 
-// Theme mode type
 export type ThemeMode = 'dark' | 'light';
 
-// Create a theme object for a specific mode
 export const createTheme = (mode: ThemeMode) => ({
   mode,
   colors: colors[mode],
@@ -217,7 +215,6 @@ export const createTheme = (mode: ThemeMode) => ({
   zIndex,
 });
 
-// Default light theme
 export const theme = createTheme('light');
 
 export type Theme = ReturnType<typeof createTheme>;

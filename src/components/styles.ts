@@ -224,7 +224,6 @@ export const CommandInputField = styled.input`
   }
 `;
 
-// Card components from the new design system
 export const Card = styled.div`
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -241,7 +240,6 @@ export const CardElevated = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.md};
 `;
 
-// Badge component
 export const Badge = styled.span`
   display: inline-flex;
   align-items: center;
@@ -253,7 +251,6 @@ export const Badge = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.xs};
 `;
 
-// Keyboard shortcut styling
 export const Kbd = styled.kbd`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: ${({ theme }) => theme.fontSizes.xs};
@@ -264,7 +261,6 @@ export const Kbd = styled.kbd`
   color: ${({ theme }) => theme.colors.textMuted};
 `;
 
-// Semantic callout components
 export const Callout = styled.div<{ $variant?: 'success' | 'warning' | 'danger' | 'info' }>`
   border-radius: ${({ theme }) => theme.radii.lg};
   border: 1px solid ${({ theme, $variant = 'info' }) => theme.colors[`${$variant}Border`]};
@@ -289,7 +285,6 @@ export const CalloutBody = styled.p`
   line-height: ${({ theme }) => theme.lineHeights.relaxed};
 `;
 
-// Text utilities
 export const TextMuted = styled.span`
   color: ${({ theme }) => theme.colors.textMuted};
 `;
