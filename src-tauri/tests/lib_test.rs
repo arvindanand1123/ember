@@ -1,4 +1,4 @@
-use phorgepdf_lib::core::pdf::{get_backend, PdfBackend};
+use ember_lib::core::pdf::{get_backend, PdfBackend};
 
 const TEST_PDF: &str = "../tests/basic.pdf";
 

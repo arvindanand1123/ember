@@ -1,9 +1,9 @@
-# phorgePDF
+# Ember
 [Charter](https://www.notion.so/Charter-2d98e8006a5080afa056c6cfe124c97c?source=copy_link)
 
 ## Prerequisites
 
-Before installing phorgePDF, ensure you have the following installed:
+Before installing Ember, ensure you have the following installed:
 
 - **Node.js** (20 or higher)
 - **pnpm** - Install with: `npm install -g pnpm`
