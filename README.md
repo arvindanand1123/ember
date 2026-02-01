@@ -11,10 +11,10 @@ Before installing Ember, ensure you have the following installed:
 
 ## Installation
 
-- Install dependencies:
-   ```bash
-   pnpm install
-   ```
+Install dependencies:
+```bash
+pnpm install
+```
 ## Development
 
 To run the app in development mode:
