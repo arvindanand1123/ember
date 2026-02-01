@@ -1,5 +1,5 @@
 export { default as CommandInput } from './CommandInput';
 export { GlobalStyles } from './GlobalStyles';
 export * from './styles';
-export type { Theme } from './theme';
-export { theme } from './theme';
+export type { Theme, ThemeMode } from './theme';
+export { colors, controlSizes, createTheme, fonts, fontSizes, fontWeights, iconSizes, lineHeights, motion, radii, shadows, space, theme, zIndex } from './theme';
