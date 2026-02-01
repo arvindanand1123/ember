@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 
 import { useHandleKeyDown } from '../hooks/useHandleKeyDown';
-import { CommandInputContainer, CommandInputField, CommandPrompt } from './styles';
+import { CommandInputContainer } from './CommandInputContainer';
+import { CommandInputField } from './CommandInputField';
+import { CommandPrompt } from './CommandPrompt';
 
 export default function CommandInput() {
   const inputRef = useRef<HTMLInputElement>(null);

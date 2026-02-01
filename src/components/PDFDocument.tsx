@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { usePdf } from '../hooks/usePdf';
-import { PDFDocumentContainer, PDFPage, PDFPageNumber } from './styles';
+import { PDFDocumentContainer } from './PDFDocumentContainer';
+import { PDFPage } from './PDFPage';
+import { PDFPageNumber } from './PDFPageNumber';
 
 interface PDFDocumentProps {
   filePath: string;

@@ -1,32 +1,22 @@
-/**
- * Ember Design System - Token Definitions
- * A warm, ember-inspired design system with dark and light mode support.
- */
-
 export const colors = {
   dark: {
-    // Ember — darkness base
     bg: '#0b0806',
     surface: '#120d0a',
     surfaceElevated: '#1a130f',
 
-    // Text
     text: '#f5efe9',
     textMuted: '#cbbfb3',
     textSubtle: '#9f8f80',
     textInverse: '#120d0a',
 
-    // Borders
     border: 'rgba(245,239,233,.10)',
     borderStrong: 'rgba(245,239,233,.20)',
 
-    // Brand / accent (flame core)
     accent: '#ff9f1c',
     accentHover: '#ffb347',
     accentActive: '#ff8c00',
     accentText: '#1a0f05',
 
-    // Semantic
     successBg: 'rgba(52, 211, 153, .12)',
     successText: '#6ee7b7',
     successBorder: 'rgba(110, 231, 183, .28)',
@@ -43,38 +33,30 @@ export const colors = {
     infoText: '#bfdbfe',
     infoBorder: 'rgba(191, 219, 254, .28)',
 
-    // Focus
     focusRing: 'rgba(255, 159, 28, .85)',
 
-    // Overlay
     backdrop: 'rgba(5,3,2,.65)',
 
-    // Selection
     selection: 'rgba(255, 159, 28, .35)',
   },
   light: {
-    // Ember — light mode (firelight, not daylight)
     bg: '#faf6f1',
     surface: '#fffaf4',
     surfaceElevated: '#fff3e6',
 
-    // Text
     text: '#2b1b12',
     textMuted: '#5a3d2b',
     textSubtle: '#8a6a55',
     textInverse: '#fffaf4',
 
-    // Borders
     border: 'rgba(43,27,18,.10)',
     borderStrong: 'rgba(43,27,18,.18)',
 
-    // Brand / accent (flame core)
     accent: '#ff9f1c',
     accentHover: '#ffb347',
     accentActive: '#ff8c00',
     accentText: '#2b1b12',
 
-    // Semantic
     successBg: 'rgba(16, 185, 129, .12)',
     successText: '#065f46',
     successBorder: 'rgba(5, 150, 105, .28)',
@@ -91,13 +73,10 @@ export const colors = {
     infoText: '#1e3a8a',
     infoBorder: 'rgba(59, 130, 246, .28)',
 
-    // Focus
     focusRing: 'rgba(255, 159, 28, .65)',
 
-    // Overlay
     backdrop: 'rgba(20,12,8,.35)',
 
-    // Selection
     selection: 'rgba(255, 159, 28, .25)',
   },
 } as const;
