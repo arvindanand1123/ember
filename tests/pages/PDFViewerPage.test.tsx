@@ -21,7 +21,7 @@ describe('PDFViewerPage', () => {
   it('basic', async () => {
     render(
       <ThemeProvider theme={theme}>
-        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={noop}/>
+        <PDFViewerPage filePath="../ember/tests/basic.pdf" onBack={noop}/>
       </ThemeProvider>,
     );
     assert(await screen.findByText('Loading document...'));
@@ -31,7 +31,7 @@ describe('PDFViewerPage', () => {
   it('document', async () => {
     render(
       <ThemeProvider theme={theme}>
-        <PDFViewerPage filePath="../phorgePDF/tests/basic.pdf" onBack={noop}/>
+        <PDFViewerPage filePath="../ember/tests/basic.pdf" onBack={noop}/>
       </ThemeProvider>,
     );
     const image = await screen.findByAltText('Page 1');
