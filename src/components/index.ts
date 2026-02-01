@@ -1,10 +1,3 @@
-export type { Theme, ThemeMode } from './theme';
-export { colors, controlSizes, createTheme, fonts, fontSizes, fontWeights, iconSizes, lineHeights, motion, radii, shadows, space, theme, zIndex } from './theme';
-
-export { GlobalStyles } from './GlobalStyles';
-
-export * from './styles';
-
 export { BackButton } from './BackButton';
 export { default as CommandInput } from './CommandInput';
 export { CommandInputContainer } from './CommandInputContainer';
@@ -13,6 +6,7 @@ export { CommandPrompt } from './CommandPrompt';
 export { ControlsLeft } from './ControlsLeft';
 export { ErrorText } from './ErrorText';
 export { FileSelector } from './FileSelector';
+export { GlobalStyles } from './GlobalStyles';
 export { HintText } from './HintText';
 export { PageInfo } from './PageInfo';
 export { PDFControlsContainer } from './PDFControlsContainer';
@@ -21,3 +15,6 @@ export { PDFPage } from './PDFPage';
 export { PDFPageNumber } from './PDFPageNumber';
 export { PDFViewer } from './PDFViewer';
 export { SelectFileButton } from './SelectFileButton';
+export * from './styles';
+export type { Theme, ThemeMode } from './theme';
+export { colors, controlSizes, createTheme, fonts, fontSizes, fontWeights, iconSizes, lineHeights, motion, radii, shadows, space, theme, zIndex } from './theme';
