@@ -37,7 +37,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: 'phorgePDF ${{ github.ref_name }}'
-          releaseBody: 'See the assets below to download and install phorgePDF.'
+          releaseName: 'Ember ${{ github.ref_name }}'
+          releaseBody: 'See the assets below to download and install Ember.'
           releaseDraft: false
           prerelease: false
