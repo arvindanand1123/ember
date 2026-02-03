@@ -50,7 +50,7 @@ jobs:
         run: cargo fmt --check
         working-directory: src-tauri
 
-      - name: Rust clippy
+      - name: Rust lint 
         run: cargo lint
         working-directory: src-tauri
 
