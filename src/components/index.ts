@@ -18,3 +18,7 @@ export { SelectFileButton } from './SelectFileButton';
 export * from './styles';
 export type { Theme, ThemeMode } from './theme';
 export { colors, controlSizes, createTheme, fonts, fontSizes, fontWeights, iconSizes, lineHeights, motion, radii, shadows, space, theme, zIndex } from './theme';
+export { ZoomButton } from './ZoomButton';
+export { ZoomContainer } from './ZoomContainer';
+export { ZoomControls } from './ZoomControls';
+export { ZoomPercentage } from './ZoomPercentage';

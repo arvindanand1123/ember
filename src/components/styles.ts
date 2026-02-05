@@ -145,3 +145,18 @@ export const TextSmall = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.sm};
   color: ${({ theme }) => theme.colors.textMuted};
 `;
+
+export const IconButton = styled(Button)<{ $size?: 'sm' | 'md' | 'lg' }>`
+  width: ${({ theme, $size = 'sm' }) => theme.controlSizes[$size]};
+  height: ${({ theme, $size = 'sm' }) => theme.controlSizes[$size]};
+  padding: 0;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.text};
+
+  & > svg {
+    width: ${({ theme, $size = 'sm' }) => theme.iconSizes[$size]};
+    height: ${({ theme, $size = 'sm' }) => theme.iconSizes[$size]};
+    color: inherit;
+    flex-shrink: 0;
+  }
+`;

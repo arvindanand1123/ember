@@ -7,6 +7,7 @@ import { PDFPageNumber } from './PDFPageNumber';
 
 interface PDFDocumentProps {
   filePath: string;
+  zoom: number;
   onDocumentLoadSuccess: (info: { numPages: number }) => void;
   onPageChange: (page: number) => void;
 }
@@ -25,13 +26,13 @@ interface PdfData {
   pages: PageData[];
 }
 
-const DISPLAY_SCALE = 1.0;
-
 export default function PDFDocument({
   filePath,
+  zoom,
   onDocumentLoadSuccess,
   onPageChange,
 }: PDFDocumentProps) {
+  const scale = zoom / 100;
   const containerRef = useRef<HTMLDivElement>(null);
   const [pdfData, setPdfData] = useState<PdfData | null>(null);
   const { loadPdf, getPageInfo, renderPageToBase64, loading, error } = usePdf();
@@ -49,13 +50,13 @@ export default function PDFDocument({
         const pageInfo = await getPageInfo(filePath, i);
         if (!pageInfo) continue;
 
-        const imageData = await renderPageToBase64(filePath, i, DISPLAY_SCALE);
+        const imageData = await renderPageToBase64(filePath, i, scale);
         if (!imageData) continue;
 
         pages.push({
           index: i,
-          width: pageInfo.width * DISPLAY_SCALE,
-          height: pageInfo.height * DISPLAY_SCALE,
+          width: pageInfo.width * scale,
+          height: pageInfo.height * scale,
           imageData,
         });
       }
@@ -69,7 +70,7 @@ export default function PDFDocument({
     };
 
     loadDocument();
-  }, [filePath, onDocumentLoadSuccess, loadPdf, getPageInfo, renderPageToBase64]);
+  }, [filePath, scale, onDocumentLoadSuccess, loadPdf, getPageInfo, renderPageToBase64]);
 
   useEffect(() => {
     const container = containerRef.current;
