@@ -1,12 +1,12 @@
 import { clearMocks } from '@tauri-apps/api/mocks';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { afterEach, assert, beforeEach, describe, it } from 'vitest';
 
 import { theme } from '../../src/components/theme';
 import PDFViewerPage from '../../src/pages/PDFViewerPage';
 import { setupTauriMocks } from '../mocks';
-import { noop } from '../utils';
+import { clickButton, noop } from '../utils';
 
 beforeEach(() => {
   setupTauriMocks();
@@ -35,8 +35,10 @@ describe('PDFViewerPage', () => {
   });
 
   it('zoom', async () => {
-    const zoomInButton = await screen.findByLabelText('Zoom in');
-    fireEvent.click(zoomInButton);
+    await clickButton({ label: 'Zoom in' });
     assert(await screen.findByText('125%'));
+
+    await clickButton({ label: 'Zoom out' });
+    assert(await screen.findByText('100%'));
   });
 });

@@ -1,5 +1,6 @@
+import { readFile } from 'node:fs/promises';
+
 import { mockIPC } from '@tauri-apps/api/mocks';
-import { readFile } from 'fs/promises';
 
 export function setupTauriMocks(dialogFilePath: string | null = null) {
   mockIPC(async (cmd, payload) => {
@@ -19,6 +20,8 @@ export function setupTauriMocks(dialogFilePath: string | null = null) {
         throw new Error(`${cmd}: filePath is required`);
       }
       const filePath = payload.filePath as string;
+
+      // eslint-disable-next-line
       const scale = 'scale' in payload ? (payload.scale as number) : null;
 
       if (cmd === 'load_pdf') {
@@ -42,7 +45,7 @@ export function setupTauriMocks(dialogFilePath: string | null = null) {
         } else {
           data = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
         }
-        return data + scale;
+        return data;
       }
     }
   });

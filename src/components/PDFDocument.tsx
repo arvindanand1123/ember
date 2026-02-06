@@ -32,7 +32,6 @@ export default function PDFDocument({
   onDocumentLoadSuccess,
   onPageChange,
 }: PDFDocumentProps) {
-  const scale = zoom / 100;
   const containerRef = useRef<HTMLDivElement>(null);
   const [pdfData, setPdfData] = useState<PdfData | null>(null);
   const { loadPdf, getPageInfo, renderPageToBase64, loading, error } = usePdf();
@@ -50,6 +49,7 @@ export default function PDFDocument({
         const pageInfo = await getPageInfo(filePath, i);
         if (!pageInfo) continue;
 
+        const scale = zoom / 100;
         const imageData = await renderPageToBase64(filePath, i, scale);
         if (!imageData) continue;
 
@@ -70,7 +70,7 @@ export default function PDFDocument({
     };
 
     loadDocument();
-  }, [filePath, scale, onDocumentLoadSuccess, loadPdf, getPageInfo, renderPageToBase64]);
+  }, [filePath, zoom, onDocumentLoadSuccess, loadPdf, getPageInfo, renderPageToBase64]);
 
   useEffect(() => {
     const container = containerRef.current;
