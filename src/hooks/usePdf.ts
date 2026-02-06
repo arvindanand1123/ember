@@ -60,7 +60,7 @@ export function usePdf() {
     async (
       filePath: string,
       pageIndex: number,
-      scale: number = 1.0,
+      scale?: number,
     ): Promise<string | null> => {
       setLoading(true);
       setError(null);
