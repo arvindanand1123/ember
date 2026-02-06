@@ -12,6 +12,7 @@ interface PDFViewerPageProps {
 export default function PDFViewerPage({ filePath, onBack }: PDFViewerPageProps) {
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [zoom, setZoom] = useState<number>(100);
 
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -22,10 +23,13 @@ export default function PDFViewerPage({ filePath, onBack }: PDFViewerPageProps) 
       <PDFControls
         currentPage={currentPage}
         numPages={numPages}
+        zoom={zoom}
         onBack={onBack}
+        onZoomChange={setZoom}
       />
       <PDFDocument
         filePath={filePath}
+        zoom={zoom}
         onDocumentLoadSuccess={onDocumentLoadSuccess}
         onPageChange={setCurrentPage}
       />

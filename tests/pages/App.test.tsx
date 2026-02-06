@@ -19,13 +19,13 @@ describe('App', () => {
   it('file select', async () => {
     render(<App/>);
     assert(screen.getByText('Select File'));
-    await clickButton('Select File');
+    await clickButton({ text: 'Select File' });
   });
 
   it('pdf view', async () => {
     render(<App/>);
-    await clickButton('Select File');
-    await clickButton('Back');
+    await clickButton({ text: 'Select File' });
+    await clickButton({ text: 'Back' });
     assert(screen.getByText('Select File'));
   });
 });

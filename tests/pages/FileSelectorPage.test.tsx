@@ -24,6 +24,6 @@ describe('FileSelectorPage', () => {
         <FileSelectorPage onFileSelected={noop}/>
       </ThemeProvider>,
     );
-    await clickButton('Select File');
+    await clickButton({ text: 'Select File' });
   });
 });
