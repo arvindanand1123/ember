@@ -9,6 +9,13 @@ export interface PageData {
   imageData: string;
 }
 
+export interface DocumentData {
+  pageCount: number;
+  title?: string;
+  author?: string;
+  pages: PageData[];
+}
+
 export function usePdf() {
   const { loadPdf, getPageInfo, renderPageToBase64 } = useInternalDriver();
 
@@ -27,27 +34,37 @@ export function usePdf() {
       zoom: number,
     ): Promise<PageData[]> => {
       const scale = zoom / 100;
-      const pages: PageData[] = [];
-
-      for (const pageNumber of pageNumbers) {
+      const pages: PageData[] = await Promise.all(pageNumbers.map(async (pageNumber) => {
         const pageInfo = await getPageInfo(filePath, pageNumber);
         const imageData = await renderPageToBase64(filePath, pageNumber, scale);
-
-        pages.push({
+        return {
           index: pageNumber,
           width: pageInfo.width * scale,
           height: pageInfo.height * scale,
           imageData,
-        });
-      }
-
+        };
+      }));
       return pages;
     },
     [getPageInfo, renderPageToBase64],
   );
 
+  const getRenderedDocument = useCallback(
+    async (filePath: string, zoom: number): Promise<DocumentData> => {
+      const pageNumbers = await getPageNumbers(filePath);
+      const pages = await getRenderedPages(filePath, pageNumbers, zoom);
+
+      return {
+        pageCount: pageNumbers.length,
+        pages,
+      };
+    },
+    [getPageNumbers, getRenderedPages],
+  );
+
   return {
     getPageNumbers,
     getRenderedPages,
+    getRenderedDocument,
   };
 }
