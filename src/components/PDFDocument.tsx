@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { usePdf } from '../hooks/usePdf';
+import { PageData, usePdf } from '../hooks/usePdf';
 import { PDFDocumentContainer } from './PDFDocumentContainer';
 import { PDFPage } from './PDFPage';
 import { PDFPageNumber } from './PDFPageNumber';
@@ -10,13 +10,6 @@ interface PDFDocumentProps {
   zoom: number;
   onDocumentLoadSuccess: (info: { numPages: number }) => void;
   onPageChange: (page: number) => void;
-}
-
-interface PageData {
-  index: number;
-  width: number;
-  height: number;
-  imageData: string;
 }
 
 interface PdfData {
@@ -34,43 +27,33 @@ export default function PDFDocument({
 }: PDFDocumentProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pdfData, setPdfData] = useState<PdfData | null>(null);
-  const { loadPdf, getPageInfo, renderPageToBase64, loading, error } = usePdf();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { getPageNumbers, getRenderedPages } = usePdf();
 
   useEffect(() => {
     const loadDocument = async () => {
-      const metadata = await loadPdf(filePath);
-      if (!metadata) return;
+      setLoading(true);
+      setError(null);
 
-      onDocumentLoadSuccess({ numPages: metadata.page_count });
+      try {
+        const pageNumbers = await getPageNumbers(filePath);
+        onDocumentLoadSuccess({ numPages: pageNumbers.length });
+        const pages = await getRenderedPages(filePath, pageNumbers, zoom);
 
-      const pages: PageData[] = [];
-
-      for (let i = 0; i < metadata.page_count; i++) {
-        const pageInfo = await getPageInfo(filePath, i);
-        if (!pageInfo) continue;
-
-        const scale = zoom / 100;
-        const imageData = await renderPageToBase64(filePath, i, scale);
-        if (!imageData) continue;
-
-        pages.push({
-          index: i,
-          width: pageInfo.width * scale,
-          height: pageInfo.height * scale,
-          imageData,
+        setPdfData({
+          pageCount: pageNumbers.length,
+          pages,
         });
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
+      } finally {
+        setLoading(false);
       }
-
-      setPdfData({
-        pageCount: metadata.page_count,
-        title: metadata.title,
-        author: metadata.author,
-        pages,
-      });
     };
 
     loadDocument();
-  }, [filePath, zoom, onDocumentLoadSuccess, loadPdf, getPageInfo, renderPageToBase64]);
+  }, [filePath, zoom, onDocumentLoadSuccess, getPageNumbers, getRenderedPages]);
 
   useEffect(() => {
     const container = containerRef.current;

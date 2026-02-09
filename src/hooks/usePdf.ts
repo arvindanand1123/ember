@@ -1,92 +1,53 @@
-import { invoke } from '@tauri-apps/api/core';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
-export interface PdfMetadata {
-  page_count: number;
-  title?: string;
-  author?: string;
-}
+import { useInternalDriver } from './useInternalDriver';
 
-export interface PageInfo {
-  page_index: number;
+export interface PageData {
+  index: number;
   width: number;
   height: number;
+  imageData: string;
 }
 
 export function usePdf() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { loadPdf, getPageInfo, renderPageToBase64 } = useInternalDriver();
 
-  const loadPdf = useCallback(
-    async (filePath: string): Promise<PdfMetadata | null> => {
-      setLoading(true);
-      setError(null);
-      try {
-        const metadata = await invoke<PdfMetadata>('load_pdf', { filePath });
-        return metadata;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        setError(errorMessage);
-        return null;
-      } finally {
-        setLoading(false);
-      }
+  const getPageNumbers = useCallback(
+    async (filePath: string): Promise<number[]> => {
+      const metadata = await loadPdf(filePath);
+      return Array.from({ length: metadata.page_count }, (_, i) => i);
     },
-    [],
+    [loadPdf],
   );
 
-  const getPageInfo = useCallback(
-    async (filePath: string, pageIndex: number): Promise<PageInfo | null> => {
-      setLoading(true);
-      setError(null);
-      try {
-        const pageInfo = await invoke<PageInfo>('get_page_info', {
-          filePath,
-          pageIndex,
-        });
-        return pageInfo;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        setError(errorMessage);
-        return null;
-      } finally {
-        setLoading(false);
-      }
-    },
-    [],
-  );
-
-  const renderPageToBase64 = useCallback(
+  const getRenderedPages = useCallback(
     async (
       filePath: string,
-      pageIndex: number,
-      scale?: number,
-    ): Promise<string | null> => {
-      setLoading(true);
-      setError(null);
-      try {
-        const base64Image = await invoke<string>('render_page_to_base64', {
-          filePath,
-          pageIndex,
-          scale,
+      pageNumbers: number[],
+      zoom: number,
+    ): Promise<PageData[]> => {
+      const scale = zoom / 100;
+      const pages: PageData[] = [];
+
+      for (const pageNumber of pageNumbers) {
+        const pageInfo = await getPageInfo(filePath, pageNumber);
+        const imageData = await renderPageToBase64(filePath, pageNumber, scale);
+
+        pages.push({
+          index: pageNumber,
+          width: pageInfo.width * scale,
+          height: pageInfo.height * scale,
+          imageData,
         });
-        return base64Image;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        setError(errorMessage);
-        return null;
-      } finally {
-        setLoading(false);
       }
+
+      return pages;
     },
-    [],
+    [getPageInfo, renderPageToBase64],
   );
 
   return {
-    loadPdf,
-    getPageInfo,
-    renderPageToBase64,
-    loading,
-    error,
+    getPageNumbers,
+    getRenderedPages,
   };
 }
