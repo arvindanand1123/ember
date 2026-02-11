@@ -1,7 +1,4 @@
-import { useRef } from 'react';
-
-import { useCurrentPdfPage } from '../hooks/useCurrentPdfPage';
-import { usePdfDocument } from '../hooks/usePdfDocument';
+import { usePdf } from '../hooks/usePdf';
 import { PDFDocumentContainer } from './PDFDocumentContainer';
 import { PDFPage } from './PDFPage';
 import { PDFPageNumber } from './PDFPageNumber';
@@ -19,16 +16,10 @@ export default function PDFDocument({
   onDocumentLoadSuccess,
   onPageChange,
 }: PDFDocumentProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { pdfData, loading, error } = usePdfDocument({
+  const { containerRef, pdfData, loading, error } = usePdf({
     filePath,
     zoom,
     onDocumentLoadSuccess,
-  });
-
-  useCurrentPdfPage({
-    containerRef,
-    enabled: !!pdfData,
     onPageChange,
   });
 
