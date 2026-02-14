@@ -15,6 +15,7 @@ export { PDFPage } from './PDFPage';
 export { PDFPageNumber } from './PDFPageNumber';
 export { PDFViewer } from './PDFViewer';
 export { SelectFileButton } from './SelectFileButton';
+export { TitleBar } from './TitleBar';
 export * from './styles';
 export type { Theme, ThemeMode } from './theme';
 export { colors, controlSizes, createTheme, fonts, fontSizes, fontWeights, iconSizes, lineHeights, motion, radii, shadows, space, theme, zIndex } from './theme';
