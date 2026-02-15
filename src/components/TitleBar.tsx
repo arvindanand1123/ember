@@ -1,6 +1,6 @@
-import flameGlyph from '../assets/ember-flame.svg';
-
 import styled from 'styled-components';
+
+import flameGlyph from '../assets/ember-flame.svg';
 
 interface TitleBarProps {
   filePath: string;
