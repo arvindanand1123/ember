@@ -41,4 +41,9 @@ describe('PDFViewerPage', () => {
     await clickButton({ label: 'Zoom out' });
     assert(await screen.findByText('100%'));
   });
+
+  it('title bar', async () => {
+    assert(await screen.findByText('Ember'));
+    assert(await screen.findByText('basic.pdf'));
+  });
 });
