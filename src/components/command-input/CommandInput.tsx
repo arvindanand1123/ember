@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-import { useHandleKeyDown } from '../hooks/useHandleKeyDown';
+import { useHandleKeyDown } from '../../hooks/useHandleKeyDown';
 import { CommandInputContainer } from './CommandInputContainer';
 import { CommandInputField } from './CommandInputField';
 import { CommandPrompt } from './CommandPrompt';

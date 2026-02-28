@@ -1,5 +1,5 @@
-import { Container, type ContainerSpec } from './Container';
-import { layoutSizes, semanticSpacing } from './theme';
+import { Container, type ContainerSpec } from '../Container';
+import { layoutSizes, semanticSpacing } from '../theme';
 
 const commandInputContainerSpec: ContainerSpec = {
   stackType: 'row',

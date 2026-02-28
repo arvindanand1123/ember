@@ -1,5 +1,5 @@
-import { Container, type ContainerSpec } from './Container';
-import { semanticSpacing } from './theme';
+import { Container, type ContainerSpec } from '../Container';
+import { semanticSpacing } from '../theme';
 
 const zoomContainerSpec: ContainerSpec = {
   stackType: 'row',

@@ -1,8 +1,6 @@
-import { ControlsLeft } from './ControlsLeft';
+import { ControlsLeft, SecondaryButton, ZoomControls } from '../control-elements';
 import { PageInfo } from './PageInfo';
 import { PDFControlsContainer } from './PDFControlsContainer';
-import { SecondaryButton } from './SecondaryButton';
-import { ZoomControls } from './ZoomControls';
 
 interface PDFControlsProps {
   currentPage: number;
