@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { semanticSpacing } from './theme';
 import { Container, type ContainerSpec } from './Container';
+import { semanticSpacing } from './theme';
 
 const controlsLeftSpec: ContainerSpec = {
   stackType: 'row',

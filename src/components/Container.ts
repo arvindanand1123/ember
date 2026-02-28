@@ -1,6 +1,5 @@
-import styled, { css } from 'styled-components';
-
 import type { CSSProperties } from 'react';
+import styled, { css } from 'styled-components';
 
 import type { Theme } from './theme';
 
@@ -124,11 +123,11 @@ export const Container = styled.div.withConfig({
 
     return css`
       ${resolvedStackType
-        ? css`
+    ? css`
             display: flex;
             flex-direction: ${resolvedStackType === 'row' ? 'row' : 'column'};
           `
-        : css`
+    : css`
             display: block;
           `}
 
