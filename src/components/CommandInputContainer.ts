@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import { Container, type ContainerSpec } from './Container';
 import { layoutSizes, semanticSpacing } from './theme';
 
@@ -19,6 +17,4 @@ const commandInputContainerSpec: ContainerSpec = {
   zIndex: 'popover',
 };
 
-export const CommandInputContainer = styled(Container).attrs({
-  spec: commandInputContainerSpec,
-})``;
+export const CommandInputContainer = Container.build(commandInputContainerSpec);

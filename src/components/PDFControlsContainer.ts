@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import { Container, type ContainerSpec } from './Container';
 import { semanticSpacing } from './theme';
 
@@ -15,6 +13,4 @@ const pdfControlsContainerSpec: ContainerSpec = {
   shadow: 'md',
 };
 
-export const PDFControlsContainer = styled(Container).attrs({
-  spec: pdfControlsContainerSpec,
-})``;
+export const PDFControlsContainer = Container.build(pdfControlsContainerSpec);

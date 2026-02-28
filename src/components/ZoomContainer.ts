@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import { Container, type ContainerSpec } from './Container';
 import { semanticSpacing } from './theme';
 
@@ -9,6 +7,4 @@ const zoomContainerSpec: ContainerSpec = {
   gap: semanticSpacing.compactGap,
 };
 
-export const ZoomContainer = styled(Container).attrs({
-  spec: zoomContainerSpec,
-})``;
+export const ZoomContainer = Container.build(zoomContainerSpec);

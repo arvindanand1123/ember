@@ -45,6 +45,9 @@ interface ContainerProps {
   stackType?: ContainerStackType;
 }
 
+export type ContainerBuildFn = (spec: ContainerSpec) => typeof ContainerBase;
+type ContainerComponent = typeof ContainerBase & { build: ContainerBuildFn };
+
 const NON_FORWARD_PROPS = new Set<string>(['spec', 'stackType']);
 
 function toCssSize(value?: DimensionValue): string | undefined {
@@ -107,7 +110,7 @@ function resolveShadow(theme: Theme, shadow?: ContainerSpec['shadow']) {
   return theme.shadows[shadow];
 }
 
-export const Container = styled.div.withConfig({
+const ContainerBase = styled.div.withConfig({
   shouldForwardProp: (prop) => !NON_FORWARD_PROPS.has(String(prop)),
 })<ContainerProps>`
   ${({ theme, spec, stackType }) => {
@@ -163,3 +166,9 @@ export const Container = styled.div.withConfig({
     `;
   }}
 `;
+
+const buildContainer: ContainerBuildFn = (spec) => styled(ContainerBase).attrs({ spec })``;
+
+export const Container: ContainerComponent = Object.assign(ContainerBase, {
+  build: buildContainer,
+});
