@@ -120,6 +120,19 @@ export const space = {
   16: '64px',
 } as const;
 
+export const semanticSpacing = {
+  compactGap: 1,
+  inputGap: 2,
+  controlsGap: 4,
+  controlsBarPaddingX: 4,
+  controlsBarPaddingY: 3,
+  floatingInset: 6,
+} as const;
+
+export const layoutSizes = {
+  floatingPanelMinWidth: 300,
+} as const;
+
 export const controlSizes = {
   sm: '28px',
   md: '34px',
@@ -186,6 +199,8 @@ export const createTheme = (mode: ThemeMode) => ({
   fontWeights,
   lineHeights,
   space,
+  semanticSpacing,
+  layoutSizes,
   controlSizes,
   iconSizes,
   radii,

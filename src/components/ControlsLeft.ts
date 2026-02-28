@@ -1,7 +1,10 @@
-import styled from 'styled-components';
+import { Container, type ContainerSpec } from './Container';
+import { semanticSpacing } from './theme';
 
-export const ControlsLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.space[4]};
-`;
+const controlsLeftSpec: ContainerSpec = {
+  stackType: 'row',
+  align: 'center',
+  gap: semanticSpacing.controlsGap,
+};
+
+export const ControlsLeft = Container.build(controlsLeftSpec);
