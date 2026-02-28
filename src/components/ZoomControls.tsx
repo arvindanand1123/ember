@@ -1,7 +1,6 @@
-import { MinusIcon, PlusIcon } from '@radix-ui/react-icons';
 import { useCallback } from 'react';
 
-import { ZoomButton } from './ZoomButton';
+import { IconButton } from './IconButton';
 import { ZoomContainer } from './ZoomContainer';
 import { ZoomPercentage } from './ZoomPercentage';
 
@@ -27,21 +26,19 @@ export function ZoomControls({ zoom, onZoomChange }: ZoomControlsProps) {
 
   return (
     <ZoomContainer>
-      <ZoomButton
+      <IconButton
+        icon="minus"
         onClick={handleZoomOut}
         disabled={zoom <= MIN_ZOOM}
         aria-label="Zoom out"
-      >
-        <MinusIcon/>
-      </ZoomButton>
+      />
       <ZoomPercentage>{zoom}%</ZoomPercentage>
-      <ZoomButton
+      <IconButton
+        icon="plus"
         onClick={handleZoomIn}
         disabled={zoom >= MAX_ZOOM}
         aria-label="Zoom in"
-      >
-        <PlusIcon/>
-      </ZoomButton>
+      />
     </ZoomContainer>
   );
 }

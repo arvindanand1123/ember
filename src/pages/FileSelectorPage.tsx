@@ -2,7 +2,7 @@ import { listen } from '@tauri-apps/api/event';
 import { open } from '@tauri-apps/plugin-dialog';
 import { DragEvent, useEffect, useState } from 'react';
 
-import { ErrorText, FileSelector, HintText, SelectFileButton } from '../components';
+import { ErrorText, FileSelector, HintText, PrimaryButton } from '../components';
 import { useStable } from '../hooks/useStable';
 
 interface FileSelectorPageProps {
@@ -74,9 +74,9 @@ export default function FileSelectorPage({ onFileSelected }: FileSelectorPagePro
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <SelectFileButton onClick={handleSelectFile}>
+      <PrimaryButton onClick={handleSelectFile}>
         Select File
-      </SelectFileButton>
+      </PrimaryButton>
       <HintText>or drag and drop a PDF here</HintText>
       {error && <ErrorText>{error}</ErrorText>}
     </FileSelector>
