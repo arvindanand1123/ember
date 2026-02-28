@@ -1,17 +1,24 @@
 import styled from 'styled-components';
 
-export const CommandInputContainer = styled.div`
-  position: fixed;
-  bottom: ${({ theme }) => theme.space[6]};
-  right: ${({ theme }) => theme.space[6]};
-  background: ${({ theme }) => theme.colors.surfaceElevated};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.lg};
-  padding: ${({ theme }) => theme.space[2]};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.space[2]};
-  min-width: 300px;
-  z-index: ${({ theme }) => theme.zIndex.popover};
-`;
+import { Container, type ContainerSpec } from './Container';
+import { layoutSizes, semanticSpacing } from './theme';
+
+const commandInputContainerSpec: ContainerSpec = {
+  stackType: 'row',
+  position: 'fixed',
+  bottom: semanticSpacing.floatingInset,
+  right: semanticSpacing.floatingInset,
+  surface: 'surfaceElevated',
+  border: 'default',
+  radius: 'lg',
+  padding: semanticSpacing.inputGap,
+  shadow: 'lg',
+  align: 'center',
+  gap: semanticSpacing.inputGap,
+  minWidth: layoutSizes.floatingPanelMinWidth,
+  zIndex: 'popover',
+};
+
+export const CommandInputContainer = styled(Container).attrs({
+  spec: commandInputContainerSpec,
+})``;

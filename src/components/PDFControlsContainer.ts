@@ -1,12 +1,20 @@
 import styled from 'styled-components';
 
-export const PDFControlsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: ${({ theme }) => theme.space[4]};
-  padding: ${({ theme }) => theme.space[3]} ${({ theme }) => theme.space[4]};
-  background-color: ${({ theme }) => theme.colors.surface};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  box-shadow: ${({ theme }) => theme.shadows.md};
-`;
+import { semanticSpacing } from './theme';
+import { Container, type ContainerSpec } from './Container';
+
+const pdfControlsContainerSpec: ContainerSpec = {
+  stackType: 'row',
+  justify: 'space-between',
+  align: 'center',
+  gap: semanticSpacing.controlsGap,
+  paddingX: semanticSpacing.controlsBarPaddingX,
+  paddingY: semanticSpacing.controlsBarPaddingY,
+  surface: 'surface',
+  border: 'bottom',
+  shadow: 'md',
+};
+
+export const PDFControlsContainer = styled(Container).attrs({
+  spec: pdfControlsContainerSpec,
+})``;
