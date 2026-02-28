@@ -1,4 +1,4 @@
-import { usePdf } from '../hooks/usePdf';
+import { usePdf } from '../../hooks/usePdf';
 import { PDFDocumentContainer } from './PDFDocumentContainer';
 import { PDFPage } from './PDFPage';
 import { PDFPageNumber } from './PDFPageNumber';

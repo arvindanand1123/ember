@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import flameGlyph from '../assets/ember-flame.svg';
+import flameGlyph from '../../assets/ember-flame.svg';
 
 export function TitleBarAppHeader() {
   return (

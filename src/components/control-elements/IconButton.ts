@@ -1,4 +1,4 @@
-import { Controls, type ControlSpec } from './Controls';
+import { Controls, type ControlSpec } from '../Controls';
 
 const iconButtonSpec: ControlSpec = {
   iconOnly: true,
