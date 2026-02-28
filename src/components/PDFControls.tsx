@@ -1,7 +1,7 @@
-import { BackButton } from './BackButton';
 import { ControlsLeft } from './ControlsLeft';
 import { PageInfo } from './PageInfo';
 import { PDFControlsContainer } from './PDFControlsContainer';
+import { SecondaryButton } from './SecondaryButton';
 import { ZoomControls } from './ZoomControls';
 
 interface PDFControlsProps {
@@ -22,9 +22,9 @@ export default function PDFControls({
   return (
     <PDFControlsContainer>
       <ControlsLeft>
-        <BackButton onClick={onBack}>
+        <SecondaryButton onClick={onBack}>
           Back
-        </BackButton>
+        </SecondaryButton>
         <PageInfo>Page {currentPage} of {numPages}</PageInfo>
       </ControlsLeft>
       <ZoomControls zoom={zoom} onZoomChange={onZoomChange}/>

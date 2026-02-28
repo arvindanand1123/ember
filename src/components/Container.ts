@@ -1,17 +1,13 @@
 import type { CSSProperties } from 'react';
 import styled, { css } from 'styled-components';
 
+import { type DimensionValue, type RadiusToken, type SpaceToken, toCssSize, type TokenOrRawValue, toRadius, toSpace } from './shared';
 import type { Theme } from './theme';
 
 export type ContainerStackType = 'row' | 'col' | null;
 
-type SpaceToken = keyof Theme['space'];
-type RadiusToken = keyof Theme['radii'];
 type ShadowToken = keyof Theme['shadows'];
 type ZIndexToken = keyof Theme['zIndex'];
-
-type DimensionValue = number | string;
-type TokenOrRawValue<TToken extends string | number | symbol> = TToken | number | string;
 
 export interface ContainerSpec {
   stackType?: ContainerStackType;
@@ -50,35 +46,8 @@ type ContainerComponent = typeof ContainerBase & { build: ContainerBuildFn };
 
 const NON_FORWARD_PROPS = new Set<string>(['spec', 'stackType']);
 
-function toCssSize(value?: DimensionValue): string | undefined {
-  if (value === undefined) return undefined;
-  return typeof value === 'number' ? `${value}px` : value;
-}
-
 function toInset(theme: Theme, value?: TokenOrRawValue<SpaceToken>): string | undefined {
   return toSpace(theme, value);
-}
-
-function toSpace(theme: Theme, value?: TokenOrRawValue<SpaceToken>): string | undefined {
-  if (value === undefined) return undefined;
-  if (typeof value === 'number') {
-    return value in theme.space ? theme.space[value as SpaceToken] : `${value}px`;
-  }
-  if (Object.prototype.hasOwnProperty.call(theme.space, value)) {
-    return theme.space[value as unknown as SpaceToken];
-  }
-  return value;
-}
-
-function toRadius(theme: Theme, value?: TokenOrRawValue<RadiusToken>): string | undefined {
-  if (value === undefined) return undefined;
-  if (typeof value === 'number') {
-    return `${value}px`;
-  }
-  if (Object.prototype.hasOwnProperty.call(theme.radii, value)) {
-    return theme.radii[value as RadiusToken];
-  }
-  return value;
 }
 
 function toZIndex(theme: Theme, value?: TokenOrRawValue<ZIndexToken>): string | undefined {
