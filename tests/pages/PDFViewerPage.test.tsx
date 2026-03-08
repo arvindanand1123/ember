@@ -68,6 +68,7 @@ describe('PDFViewerPage', () => {
     const [blob] = createObjectURLMock.mock.calls[0];
     assert(blob instanceof Blob);
     assert(blob.type === 'image/png');
+    assert(blob.size > 0);
   });
 
   it('revokes object urls when rerendering and unmounting', async () => {

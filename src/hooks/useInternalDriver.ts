@@ -31,8 +31,12 @@ export function useInternalDriver() {
   );
 
   const renderPage = useCallback(
-    (filePath: string, pageIndex: number, scale: number): Promise<Uint8Array | number[]> =>
-      invoke<Uint8Array | number[]>('render_page', { filePath, pageIndex, scale }),
+    (
+      filePath: string,
+      pageIndex: number,
+      scale: number,
+    ): Promise<ArrayBuffer | Uint8Array | number[]> =>
+      invoke<ArrayBuffer | Uint8Array | number[]>('render_page', { filePath, pageIndex, scale }),
     [],
   );
 

@@ -36,9 +36,9 @@ export function setupTauriMocks(dialogFilePath: string | null = null) {
 
       if (cmd === 'render_page') {
         const file = await readFile(filePath).catch(() => null);
-        let data: Uint8Array;
+        let data: ArrayBuffer;
         if (file) {
-          data = Uint8Array.from(file);
+          data = Uint8Array.from(file).buffer;
         } else {
           data = Uint8Array.from([
             137, 80, 78, 71, 13, 10, 26, 10,
@@ -50,7 +50,7 @@ export function setupTauriMocks(dialogFilePath: string | null = null) {
             15, 0, 3, 134, 1, 128, 90, 52,
             125, 107, 0, 0, 0, 0, 73, 69,
             78, 68, 174, 66, 96, 130,
-          ]);
+          ]).buffer;
         }
         return data;
       }

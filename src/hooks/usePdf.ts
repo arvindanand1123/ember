@@ -24,10 +24,18 @@ interface UsePdfOptions {
   onPageChange: (page: number) => void;
 }
 
-type RenderedPageBytes = Uint8Array | number[];
+type RenderedPageBytes = ArrayBuffer | Uint8Array | number[];
+
+function toByteArray(pngBytes: RenderedPageBytes) {
+  if (pngBytes instanceof ArrayBuffer) {
+    return new Uint8Array(pngBytes);
+  }
+
+  return pngBytes instanceof Uint8Array ? pngBytes : Uint8Array.from(pngBytes);
+}
 
 function createPageImageUrl(pngBytes: RenderedPageBytes) {
-  const byteArray = pngBytes instanceof Uint8Array ? pngBytes : Uint8Array.from(pngBytes);
+  const byteArray = toByteArray(pngBytes);
   return URL.createObjectURL(new Blob([byteArray], { type: 'image/png' }));
 }
 
