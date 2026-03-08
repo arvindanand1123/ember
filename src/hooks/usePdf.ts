@@ -10,6 +10,13 @@ export interface PageData {
   imageUrl: string;
 }
 
+interface RenderedPageData {
+  index: number;
+  width: number;
+  height: number;
+  imageBytes: Uint8Array;
+}
+
 export interface DocumentData {
   pageCount: number;
   title?: string;
@@ -58,36 +65,21 @@ export function usePdf({
       const pageNumbers = Array.from({ length: metadata.page_count }, (_, i) => i);
       const scale = pdfZoom / 100;
 
-      const pageResults = await Promise.allSettled(pageNumbers.map(async (pageNumber) => {
+      const renderedPages = await Promise.all(pageNumbers.map(async (pageNumber): Promise<RenderedPageData> => {
         const pageInfo = await getPageInfo(pdfFilePath, pageNumber);
         const imageBytes = await renderPage(pdfFilePath, pageNumber, scale);
         return {
           index: pageNumber,
           width: pageInfo.width * scale,
           height: pageInfo.height * scale,
-          imageUrl: createPageImageUrl(imageBytes),
+          imageBytes,
         };
       }));
 
-      const failedRender = pageResults.find(
-        (result): result is PromiseRejectedResult => result.status === 'rejected',
-      );
-
-      if (failedRender) {
-        pageResults.forEach((result) => {
-          if (result.status === 'fulfilled') {
-            URL.revokeObjectURL(result.value.imageUrl);
-          }
-        });
-        throw failedRender.reason;
-      }
-
-      const pages = pageResults.map((result) => {
-        if (result.status !== 'fulfilled') {
-          throw new Error('Page rendering did not complete');
-        }
-        return result.value;
-      });
+      const pages = renderedPages.map(({ imageBytes, ...page }) => ({
+        ...page,
+        imageUrl: createPageImageUrl(imageBytes),
+      }));
 
       return {
         pageCount: pageNumbers.length,
