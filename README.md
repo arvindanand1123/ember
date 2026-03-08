@@ -5,11 +5,19 @@
 
 Before installing Ember, ensure you have the following installed:
 
-- **Node.js** (20 or higher)
+- **direnv** - Install from [direnv.net](https://direnv.net/)
+- **nvm** - Install from [nvm-sh/nvm](https://github.com/nvm-sh/nvm)
+- **Node.js** 22 (loaded automatically by `direnv`)
 - **pnpm** - Install with: `npm install -g pnpm`
 - **Rust** (latest stable)
 
 ## Installation
+
+Allow the repo environment and switch to Node 22:
+
+```bash
+direnv allow
+```
 
 Install dependencies:
 ```bash
@@ -20,6 +28,7 @@ pnpm install
 To run the app in development mode:
 
 ```bash
+direnv allow
 pnpm tauri dev
 ```
 
