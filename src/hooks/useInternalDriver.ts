@@ -30,15 +30,15 @@ export function useInternalDriver() {
     [],
   );
 
-  const renderPageToBase64 = useCallback(
-    (filePath: string, pageIndex: number, scale: number): Promise<string> =>
-      invoke<string>('render_page_to_base64', { filePath, pageIndex, scale }),
+  const renderPage = useCallback(
+    (filePath: string, pageIndex: number, scale: number): Promise<Uint8Array | number[]> =>
+      invoke<Uint8Array | number[]>('render_page', { filePath, pageIndex, scale }),
     [],
   );
 
   return {
     loadPdf,
     getPageInfo,
-    renderPageToBase64,
+    renderPage,
   };
 }

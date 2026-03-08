@@ -40,7 +40,7 @@ export default function PDFDocument({
           $width={page.width}
           $height={page.height}
         >
-          <img src={page.imageData} alt={`Page ${page.index + 1}`}/>
+          <img src={page.imageUrl} alt={`Page ${page.index + 1}`}/>
           <PDFPageNumber>{page.index + 1}</PDFPageNumber>
         </PDFPage>
       ))}

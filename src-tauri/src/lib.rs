@@ -9,7 +9,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             endpoints::pdf::load_pdf,
             endpoints::pdf::get_page_info,
-            endpoints::pdf::render_page_to_base64,
+            endpoints::pdf::render_page,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
