@@ -1,10 +1,12 @@
-import { readFile } from 'node:fs/promises';
-
 import { mockIPC } from '@tauri-apps/api/mocks';
 
-function createMockRenderBytes(size = 16) {
-  return Array.from({ length: size }, (_, row) =>
-    Array.from({ length: size }, (_, column) => ((row * size) + column) * 73 % 256),
+function createMockRenderBytes(scale = 1, size = 16) {
+  const scaledSize = Math.max(1, Math.round(size * scale));
+  return Array.from({ length: scaledSize }, (_, row) =>
+    Array.from(
+      { length: scaledSize },
+      (_, column) => (((row * scaledSize) + column) * 73) % 256,
+    ),
   ).flat();
 }
 
@@ -25,7 +27,6 @@ export function setupTauriMocks(dialogFilePath: string | null = null) {
       if (!payload || !('filePath' in payload)) {
         throw new Error(`${cmd}: filePath is required`);
       }
-      const filePath = payload.filePath as string;
 
       if (cmd === 'load_pdf') {
         return { page_count: 1, title: 'Title', author: null };
@@ -41,8 +42,11 @@ export function setupTauriMocks(dialogFilePath: string | null = null) {
       }
 
       if (cmd === 'render_page') {
-        const file = await readFile(filePath).catch(() => null);
-        return file ? Array.from(Uint8Array.from(file)) : createMockRenderBytes();
+        const scale =
+          'scale' in payload && typeof payload.scale === 'number'
+            ? payload.scale
+            : 1;
+        return createMockRenderBytes(scale);
       }
     }
   });

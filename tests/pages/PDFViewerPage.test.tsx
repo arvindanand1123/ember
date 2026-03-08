@@ -82,6 +82,7 @@ describe('PDFViewerPage', () => {
       assert(revokeObjectURLMock.mock.calls.length === 1);
     });
     assert(revokeObjectURLMock.mock.calls[0][0] === 'blob:render-1');
+    assert(createObjectURLMock.mock.calls[1][0].size > createObjectURLMock.mock.calls[0][0].size);
 
     cleanup();
     assert(revokeObjectURLMock.mock.calls.length === 2);
