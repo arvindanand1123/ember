@@ -1,4 +1,5 @@
-import { mockIPC } from '@tauri-apps/api/mocks';
+import { clearMocks as clearTauriApiMocks, mockIPC } from '@tauri-apps/api/mocks';
+import { vi } from 'vitest';
 
 function createMockRenderBytes(scale = 1, size = 16) {
   const scaledSize = Math.max(1, Math.round(size * scale));
@@ -10,7 +11,28 @@ function createMockRenderBytes(scale = 1, size = 16) {
   ).flat();
 }
 
+const originalCreateObjectURL = URL.createObjectURL;
+const originalRevokeObjectURL = URL.revokeObjectURL;
+
+let createObjectURLMock: ReturnType<typeof vi.fn>;
+let revokeObjectURLMock: ReturnType<typeof vi.fn>;
+
 export function setupTauriMocks(dialogFilePath: string | null = null) {
+  let objectUrlIndex = 0;
+  createObjectURLMock = vi.fn(() => `blob:render-${++objectUrlIndex}`);
+  revokeObjectURLMock = vi.fn();
+
+  Object.defineProperty(URL, 'createObjectURL', {
+    configurable: true,
+    writable: true,
+    value: createObjectURLMock,
+  });
+  Object.defineProperty(URL, 'revokeObjectURL', {
+    configurable: true,
+    writable: true,
+    value: revokeObjectURLMock,
+  });
+
   mockIPC(async (cmd, payload) => {
     // Handle event plugin commands
     if (cmd === 'plugin:event|listen') {
@@ -49,5 +71,24 @@ export function setupTauriMocks(dialogFilePath: string | null = null) {
         return createMockRenderBytes(scale);
       }
     }
+  });
+
+  return {
+    createObjectURLMock,
+    revokeObjectURLMock,
+  };
+}
+
+export function clearMocks() {
+  clearTauriApiMocks();
+  Object.defineProperty(URL, 'createObjectURL', {
+    configurable: true,
+    writable: true,
+    value: originalCreateObjectURL,
+  });
+  Object.defineProperty(URL, 'revokeObjectURL', {
+    configurable: true,
+    writable: true,
+    value: originalRevokeObjectURL,
   });
 }
