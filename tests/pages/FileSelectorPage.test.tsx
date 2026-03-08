@@ -1,11 +1,10 @@
-import { clearMocks } from '@tauri-apps/api/mocks';
 import { cleanup, render } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { afterEach, beforeEach, describe, it } from 'vitest';
 
 import { theme } from '../../src/components/theme';
 import FileSelectorPage from '../../src/pages/FileSelectorPage';
-import { setupTauriMocks } from '../mocks';
+import { clearMocks, setupTauriMocks } from '../mocks';
 import { clickButton, noop } from '../utils';
 
 beforeEach(() => {
