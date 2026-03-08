@@ -26,14 +26,12 @@ pub fn render_page(
     file_path: String,
     page_index: u16,
     scale: Option<f32>,
-) -> Result<tauri::ipc::Response, String> {
+) -> Result<Vec<u8>, String> {
     let backend = pdf::get_backend().map_err(|e| e.to_string())?;
     let document = backend.open(&file_path)?;
 
     let scale_factor = scale.unwrap_or(1.0);
-    let png_bytes = document
+    document
         .render_page(page_index, scale_factor)
-        .map_err(|e| e.to_string())?;
-
-    Ok(tauri::ipc::Response::new(png_bytes))
+        .map_err(|e| e.to_string())
 }

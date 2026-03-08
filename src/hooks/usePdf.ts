@@ -24,19 +24,8 @@ interface UsePdfOptions {
   onPageChange: (page: number) => void;
 }
 
-type RenderedPageBytes = ArrayBuffer | Uint8Array | number[];
-
-function toByteArray(pngBytes: RenderedPageBytes) {
-  if (pngBytes instanceof ArrayBuffer) {
-    return new Uint8Array(pngBytes);
-  }
-
-  return pngBytes instanceof Uint8Array ? pngBytes : Uint8Array.from(pngBytes);
-}
-
-function createPageImageUrl(pngBytes: RenderedPageBytes) {
-  const byteArray = toByteArray(pngBytes);
-  return URL.createObjectURL(new Blob([byteArray], { type: 'image/png' }));
+function createPageImageUrl(pngBytes: Uint8Array) {
+  return URL.createObjectURL(new Blob([pngBytes], { type: 'image/png' }));
 }
 
 function revokeDocumentUrls(documentData: DocumentData | null) {
