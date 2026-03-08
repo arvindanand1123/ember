@@ -20,9 +20,9 @@ Allow the repo environment and switch to Node 22:
 direnv allow
 ```
 
-Install dependencies:
+Install dependencies for the frontend and Tauri:
 ```bash
-pnpm install
+just setup
 ```
 
 All `just` recipes assume you have already run `direnv allow` in this repo.
