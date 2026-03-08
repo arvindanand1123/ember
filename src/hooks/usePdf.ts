@@ -92,7 +92,7 @@ export function usePdf({
   );
 
   useEffect(() => {
-    const controller = new AbortController();
+    let isStale = false;
 
     const loadDocument = async () => {
       setLoading(true);
@@ -101,7 +101,7 @@ export function usePdf({
 
       try {
         const renderedDocument = await getRenderedDocument(filePath, zoom);
-        if (controller.signal.aborted) {
+        if (isStale) {
           revokeDocumentUrls(renderedDocument);
           return;
         }
@@ -109,11 +109,11 @@ export function usePdf({
         stableOnDocumentLoadSuccess({ numPages: renderedDocument.pageCount });
         setPdfData(renderedDocument);
       } catch (err) {
-        if (!controller.signal.aborted) {
+        if (!isStale) {
           setError(err instanceof Error ? err.message : String(err));
         }
       } finally {
-        if (!controller.signal.aborted) {
+        if (!isStale) {
           setLoading(false);
         }
       }
@@ -122,7 +122,7 @@ export function usePdf({
     loadDocument();
 
     return () => {
-      controller.abort();
+      isStale = true;
     };
   }, [filePath, zoom, stableOnDocumentLoadSuccess, getRenderedDocument]);
 
