@@ -5,6 +5,7 @@ import { PDFPageNumber } from './PDFPageNumber';
 
 interface PDFDocumentProps {
   filePath: string;
+  rotation: number;
   zoom: number;
   onDocumentLoadSuccess: (info: { numPages: number }) => void;
   onPageChange: (page: number) => void;
@@ -12,6 +13,7 @@ interface PDFDocumentProps {
 
 export default function PDFDocument({
   filePath,
+  rotation,
   zoom,
   onDocumentLoadSuccess,
   onPageChange,
@@ -39,8 +41,11 @@ export default function PDFDocument({
           data-page={page.index}
           $width={page.width}
           $height={page.height}
+          $rotation={rotation}
         >
-          <img src={page.imageData} alt={`Page ${page.index + 1}`}/>
+          <div className="pdf-page-frame" data-rotation={rotation}>
+            <img src={page.imageData} alt={`Page ${page.index + 1}`}/>
+          </div>
           <PDFPageNumber>{page.index + 1}</PDFPageNumber>
         </PDFPage>
       ))}

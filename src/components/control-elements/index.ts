@@ -1,7 +1,9 @@
+export { ControlsRight } from './ControlsRight';
 export { ControlsLeft } from './ControlsLeft';
 export { DestructiveButton } from './DestructiveButton';
 export { IconButton } from './IconButton';
 export { PrimaryButton } from './PrimaryButton';
+export { RotateButton } from './RotateButton';
 export { SecondaryButton } from './SecondaryButton';
 export { ZoomContainer } from './ZoomContainer';
 export { ZoomControls } from './ZoomControls';

@@ -1,4 +1,4 @@
-import { ControlsLeft, SecondaryButton, ZoomControls } from '../control-elements';
+import { ControlsLeft, ControlsRight, RotateButton, SecondaryButton, ZoomControls } from '../control-elements';
 import { PageInfo } from './PageInfo';
 import { PDFControlsContainer } from './PDFControlsContainer';
 
@@ -7,6 +7,7 @@ interface PDFControlsProps {
   numPages: number;
   zoom: number;
   onBack: () => void;
+  onRotate: () => void;
   onZoomChange: (zoom: number) => void;
 }
 
@@ -15,6 +16,7 @@ export default function PDFControls({
   numPages,
   zoom,
   onBack,
+  onRotate,
   onZoomChange,
 }: PDFControlsProps) {
   return (
@@ -25,7 +27,10 @@ export default function PDFControls({
         </SecondaryButton>
         <PageInfo>Page {currentPage} of {numPages}</PageInfo>
       </ControlsLeft>
-      <ZoomControls zoom={zoom} onZoomChange={onZoomChange}/>
+      <ControlsRight>
+        <RotateButton onRotate={onRotate}/>
+        <ZoomControls zoom={zoom} onZoomChange={onZoomChange}/>
+      </ControlsRight>
     </PDFControlsContainer>
   );
 }
