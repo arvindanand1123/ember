@@ -1,8 +1,38 @@
-import { readFile } from 'node:fs/promises';
+import { clearMocks as clearTauriApiMocks, mockIPC } from '@tauri-apps/api/mocks';
+import { vi } from 'vitest';
 
-import { mockIPC } from '@tauri-apps/api/mocks';
+function createMockRenderBytes(scale = 1, size = 16) {
+  const scaledSize = Math.max(1, Math.round(size * scale));
+  return Array.from({ length: scaledSize }, (_, row) =>
+    Array.from(
+      { length: scaledSize },
+      (_, column) => (((row * scaledSize) + column) * 73) % 256,
+    ),
+  ).flat();
+}
+
+const originalCreateObjectURL = URL.createObjectURL;
+const originalRevokeObjectURL = URL.revokeObjectURL;
+
+let createObjectURLMock: ReturnType<typeof vi.fn>;
+let revokeObjectURLMock: ReturnType<typeof vi.fn>;
 
 export function setupTauriMocks(dialogFilePath: string | null = null) {
+  let objectUrlIndex = 0;
+  createObjectURLMock = vi.fn(() => `blob:render-${++objectUrlIndex}`);
+  revokeObjectURLMock = vi.fn();
+
+  Object.defineProperty(URL, 'createObjectURL', {
+    configurable: true,
+    writable: true,
+    value: createObjectURLMock,
+  });
+  Object.defineProperty(URL, 'revokeObjectURL', {
+    configurable: true,
+    writable: true,
+    value: revokeObjectURLMock,
+  });
+
   mockIPC(async (cmd, payload) => {
     // Handle event plugin commands
     if (cmd === 'plugin:event|listen') {
@@ -15,14 +45,10 @@ export function setupTauriMocks(dialogFilePath: string | null = null) {
       return dialogFilePath;
     }
 
-    if (cmd === 'load_pdf' || cmd === 'get_page_info' || cmd === 'render_page_to_base64') {
+    if (cmd === 'load_pdf' || cmd === 'get_page_info' || cmd === 'render_page') {
       if (!payload || !('filePath' in payload)) {
         throw new Error(`${cmd}: filePath is required`);
       }
-      const filePath = payload.filePath as string;
-
-      // eslint-disable-next-line
-      const scale = 'scale' in payload ? (payload.scale as number) : null;
 
       if (cmd === 'load_pdf') {
         return { page_count: 1, title: 'Title', author: null };
@@ -37,16 +63,32 @@ export function setupTauriMocks(dialogFilePath: string | null = null) {
         return { page_index: pageIndex, width: 612, height: 792 };
       }
 
-      if (cmd === 'render_page_to_base64') {
-        const file = await readFile(filePath).catch(() => null);
-        let data: string;
-        if (file) {
-          data = `data:image/png;base64,${file.toString('base64')}`;
-        } else {
-          data = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-        }
-        return data;
+      if (cmd === 'render_page') {
+        const scale =
+          'scale' in payload && typeof payload.scale === 'number'
+            ? payload.scale
+            : 1;
+        return createMockRenderBytes(scale);
       }
     }
+  });
+
+  return {
+    createObjectURLMock,
+    revokeObjectURLMock,
+  };
+}
+
+export function clearMocks() {
+  clearTauriApiMocks();
+  Object.defineProperty(URL, 'createObjectURL', {
+    configurable: true,
+    writable: true,
+    value: originalCreateObjectURL,
+  });
+  Object.defineProperty(URL, 'revokeObjectURL', {
+    configurable: true,
+    writable: true,
+    value: originalRevokeObjectURL,
   });
 }

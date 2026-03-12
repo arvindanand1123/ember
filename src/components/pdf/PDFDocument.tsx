@@ -44,7 +44,7 @@ export default function PDFDocument({
           $rotation={rotation}
         >
           <div className="pdf-page-frame" data-rotation={rotation}>
-            <img src={page.imageData} alt={`Page ${page.index + 1}`}/>
+            <img src={page.imageUrl} alt={`Page ${page.index + 1}`}/>
           </div>
           <PDFPageNumber>{page.index + 1}</PDFPageNumber>
         </PDFPage>

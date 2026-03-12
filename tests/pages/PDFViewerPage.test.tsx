@@ -1,15 +1,16 @@
-import { clearMocks } from '@tauri-apps/api/mocks';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { afterEach, assert, beforeEach, describe, it } from 'vitest';
 
 import { theme } from '../../src/components/theme';
 import PDFViewerPage from '../../src/pages/PDFViewerPage';
-import { setupTauriMocks } from '../mocks';
+import { clearMocks, setupTauriMocks } from '../mocks';
 import { clickButton, noop } from '../utils';
 
+let revokeObjectURLMock: ReturnType<typeof setupTauriMocks>['revokeObjectURLMock'];
+
 beforeEach(() => {
-  setupTauriMocks();
+  ({ revokeObjectURLMock } = setupTauriMocks());
   render(
     <ThemeProvider theme={theme}>
       <PDFViewerPage filePath="../ember/tests/basic.pdf" onBack={noop}/>
@@ -30,8 +31,19 @@ describe('PDFViewerPage', () => {
 
   it('document', async () => {
     const image = await screen.findByAltText('Page 1');
-    assert(image);
-    assert(image.tagName === 'IMG');
+    assert(image.getAttribute('src') === 'blob:render-1');
+  });
+
+  it('revokes object urls when rerendering and unmounting', async () => {
+    await screen.findByAltText('Page 1');
+    await clickButton({ label: 'Zoom in' });
+
+    await waitFor(() => {
+      assert(revokeObjectURLMock.mock.calls[0][0] === 'blob:render-1');
+    });
+
+    cleanup();
+    assert(revokeObjectURLMock.mock.calls[1][0] === 'blob:render-2');
   });
 
   it('zoom', async () => {

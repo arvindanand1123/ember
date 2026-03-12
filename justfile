@@ -3,6 +3,10 @@ set shell := ["zsh", "-cu"]
 default:
   @just --list
 
+setup:
+  pnpm install
+  cargo fetch --manifest-path src-tauri/Cargo.toml
+
 dev:
   pnpm exec vite
 

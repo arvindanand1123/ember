@@ -7,7 +7,14 @@ export interface PageData {
   index: number;
   width: number;
   height: number;
-  imageData: string;
+  imageUrl: string;
+}
+
+interface RenderedPageData {
+  index: number;
+  width: number;
+  height: number;
+  imageBytes: Uint8Array;
 }
 
 export interface DocumentData {
@@ -24,6 +31,20 @@ interface UsePdfOptions {
   onPageChange: (page: number) => void;
 }
 
+function createPageImageUrl(pngBytes: Uint8Array) {
+  return URL.createObjectURL(new Blob([pngBytes], { type: 'image/png' }));
+}
+
+function revokeDocumentUrls(documentData: DocumentData | null) {
+  if (!documentData) {
+    return;
+  }
+
+  documentData.pages.forEach((page) => {
+    URL.revokeObjectURL(page.imageUrl);
+  });
+}
+
 export function usePdf({
   filePath,
   zoom,
@@ -36,7 +57,7 @@ export function usePdf({
   const [error, setError] = useState<string | null>(null);
   const stableOnDocumentLoadSuccess = useStable(onDocumentLoadSuccess);
   const stableOnPageChange = useStable(onPageChange);
-  const { loadPdf, getPageInfo, renderPageToBase64 } = useInternalDriver();
+  const { loadPdf, getPageInfo, renderPage } = useInternalDriver();
 
   const getRenderedDocument = useCallback(
     async (pdfFilePath: string, pdfZoom: number): Promise<DocumentData> => {
@@ -44,16 +65,22 @@ export function usePdf({
       const pageNumbers = Array.from({ length: metadata.page_count }, (_, i) => i);
       const scale = pdfZoom / 100;
 
-      const pages: PageData[] = await Promise.all(pageNumbers.map(async (pageNumber) => {
+      const renderedPages = await Promise.all(pageNumbers.map(async (pageNumber): Promise<RenderedPageData> => {
         const pageInfo = await getPageInfo(pdfFilePath, pageNumber);
-        const imageData = await renderPageToBase64(pdfFilePath, pageNumber, scale);
+        const imageBytes = await renderPage(pdfFilePath, pageNumber, scale);
         return {
           index: pageNumber,
           width: pageInfo.width * scale,
           height: pageInfo.height * scale,
-          imageData,
+          imageBytes,
         };
       }));
+
+      const pages = renderedPages.map(({ imageBytes, ...page }) => ({
+        ...page,
+        imageUrl: createPageImageUrl(imageBytes),
+      }));
+
       return {
         pageCount: pageNumbers.length,
         title: metadata.title,
@@ -61,7 +88,7 @@ export function usePdf({
         pages,
       };
     },
-    [getPageInfo, loadPdf, renderPageToBase64],
+    [getPageInfo, loadPdf, renderPage],
   );
 
   useEffect(() => {
@@ -70,10 +97,14 @@ export function usePdf({
     const loadDocument = async () => {
       setLoading(true);
       setError(null);
+      setPdfData(null);
 
       try {
         const renderedDocument = await getRenderedDocument(filePath, zoom);
-        if (isStale) return;
+        if (isStale) {
+          revokeDocumentUrls(renderedDocument);
+          return;
+        }
 
         stableOnDocumentLoadSuccess({ numPages: renderedDocument.pageCount });
         setPdfData(renderedDocument);
@@ -94,6 +125,16 @@ export function usePdf({
       isStale = true;
     };
   }, [filePath, zoom, stableOnDocumentLoadSuccess, getRenderedDocument]);
+
+  useEffect(() => {
+    if (!pdfData) {
+      return;
+    }
+
+    return () => {
+      revokeDocumentUrls(pdfData);
+    };
+  }, [pdfData]);
 
   useEffect(() => {
     const container = containerRef.current;
