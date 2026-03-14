@@ -1,5 +1,5 @@
-export { ControlsRight } from './ControlsRight';
 export { ControlsLeft } from './ControlsLeft';
+export { ControlsRight } from './ControlsRight';
 export { DestructiveButton } from './DestructiveButton';
 export { IconButton } from './IconButton';
 export { PrimaryButton } from './PrimaryButton';
