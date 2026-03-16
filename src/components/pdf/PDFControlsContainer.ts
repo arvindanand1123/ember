@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 
 import { Container, type ContainerSpec } from '../Container';
 import { semanticSpacing } from '../theme';
@@ -15,9 +14,4 @@ const pdfControlsContainerSpec: ContainerSpec = {
   shadow: 'md',
 };
 
-const PDFControlsContainerBase = Container.build(pdfControlsContainerSpec);
-
-export const PDFControlsContainer = styled(PDFControlsContainerBase)`
-  flex-wrap: wrap;
-  row-gap: ${({ theme }) => theme.space[2]};
-`;
+export const PDFControlsContainer = Container.build(pdfControlsContainerSpec);

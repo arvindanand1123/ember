@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 
 import { Container, type ContainerSpec } from '../Container';
 import { semanticSpacing } from '../theme';
@@ -10,9 +9,4 @@ const controlsRightSpec: ContainerSpec = {
   gap: semanticSpacing.controlsGap,
 };
 
-const ControlsRightBase = Container.build(controlsRightSpec);
-
-export const ControlsRight = styled(ControlsRightBase)`
-  flex-wrap: wrap;
-  row-gap: ${({ theme }) => theme.space[2]};
-`;
+export const ControlsRight = Container.build(controlsRightSpec);
