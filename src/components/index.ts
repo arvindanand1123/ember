@@ -1,7 +1,7 @@
 export { CommandInput, CommandInputContainer, CommandInputField, CommandPrompt } from './command-input';
 export type { ContainerSpec, ContainerStackType } from './Container';
 export { Container as SpecContainer } from './Container';
-export { ControlsLeft, DestructiveButton, IconButton, PrimaryButton, SecondaryButton, ZoomContainer, ZoomControls, ZoomPercentage } from './control-elements';
+export { ControlsLeft, ControlsRight, DestructiveButton, IconButton, PrimaryButton, RotateButton, SecondaryButton, ZoomContainer, ZoomControls, ZoomPercentage } from './control-elements';
 export type { ControlIconName, ControlSpec, ControlVariant } from './Controls';
 export { Controls } from './Controls';
 export { ErrorText, FileSelector, HintText } from './file-selector';
