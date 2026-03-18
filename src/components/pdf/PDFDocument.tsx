@@ -1,6 +1,6 @@
 import { usePdf } from '../../hooks/usePdf';
 import { PDFDocumentContainer } from './PDFDocumentContainer';
-import { PDFPage } from './PDFPage';
+import { PDFPage, PDFPageFrame } from './PDFPage';
 import { PDFPageNumber } from './PDFPageNumber';
 
 interface PDFDocumentProps {
@@ -39,13 +39,18 @@ export default function PDFDocument({
         <PDFPage
           key={page.index}
           data-page={page.index}
-          $width={page.width}
-          $height={page.height}
-          $rotation={rotation}
+          width={page.width}
+          height={page.height}
+          rotation={rotation}
         >
-          <div className="pdf-page-frame" data-rotation={rotation}>
+          <PDFPageFrame
+            width={page.width}
+            height={page.height}
+            rotation={rotation}
+            data-rotation={rotation}
+          >
             <img src={page.imageUrl} alt={`Page ${page.index + 1}`}/>
-          </div>
+          </PDFPageFrame>
           <PDFPageNumber>{page.index + 1}</PDFPageNumber>
         </PDFPage>
       ))}
