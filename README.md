@@ -3,7 +3,7 @@
 
 ## Prerequisites
 
-Before installing Ember, ensure you have the following installed:
+Before contributing, ensure you have the following installed:
 
 - **direnv** - Install from [direnv.net](https://direnv.net/)
 - **nvm** - Install from [nvm-sh/nvm](https://github.com/nvm-sh/nvm)
