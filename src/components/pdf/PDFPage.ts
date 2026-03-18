@@ -4,7 +4,7 @@ import { Container, type ContainerSpec } from '../Container';
 
 const isQuarterTurn = (rotation: number) => rotation % 180 !== 0;
 
-const pdfPageSpec: ContainerSpec = {
+const pdfPageSpec = {
   stackType: 'row',
   align: 'center',
   justify: 'center',
@@ -13,23 +13,35 @@ const pdfPageSpec: ContainerSpec = {
   radius: 'sm',
   shadow: 'lg',
   overflow: 'hidden',
+  width: 0,
+  height: 0,
+} satisfies ContainerSpec;
+
+const pdfPageFrameSpec = {
+  stackType: 'row',
+  align: 'center',
+  justify: 'center',
+  width: 0,
+  height: 0,
+} satisfies ContainerSpec;
+
+type PDFPageProps = {
+  width: number;
+  height: number;
+  rotation: number;
 };
 
-const PDFPageBase = Container.build(pdfPageSpec);
+export const PDFPage = Container.build(pdfPageSpec).inject<PDFPageProps>({
+  width: ({ width, height, rotation }) => (isQuarterTurn(rotation) ? height : width),
+  height: ({ width, height, rotation }) => (isQuarterTurn(rotation) ? width : height),
+});
 
-export const PDFPage = styled(PDFPageBase)<{ $width: number; $height: number; $rotation: number }>`
-  width: ${({ $width, $height, $rotation }) => (isQuarterTurn($rotation) ? $height : $width)}px;
-  height: ${({ $width, $height, $rotation }) => (isQuarterTurn($rotation) ? $width : $height)}px;
-
-  .pdf-page-frame {
-    width: ${({ $width }) => $width}px;
-    height: ${({ $height }) => $height}px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: ${({ $rotation }) => `rotate(${ $rotation }deg)`};
-    transform-origin: center;
-  }
+export const PDFPageFrame = styled(Container.build(pdfPageFrameSpec).inject<PDFPageProps>({
+  width: ({ width }) => width,
+  height: ({ height }) => height,
+}))`
+  transform: ${({ rotation }) => `rotate(${ rotation }deg)`};
+  transform-origin: center;
 
   img {
     max-width: 100%;

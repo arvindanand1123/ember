@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { type ComponentPropsWithoutRef, createElement, type CSSProperties } from 'react';
 import styled, { css } from 'styled-components';
 
 import { type DimensionValue, type RadiusToken, type SpaceToken, toCssSize, type TokenOrRawValue, toRadius, toSpace } from './shared';
@@ -38,13 +38,13 @@ export interface ContainerSpec {
 
 interface ContainerProps {
   spec?: ContainerSpec;
-  stackType?: ContainerStackType;
 }
 
-export type ContainerBuildFn = (spec: ContainerSpec) => typeof ContainerBase;
-type ContainerComponent = typeof ContainerBase & { build: ContainerBuildFn };
+type ContainerInjectSpec<Props, Spec extends ContainerSpec> = {
+  [K in keyof Spec]?: (props: Props) => Spec[K] | undefined;
+};
 
-const NON_FORWARD_PROPS = new Set<string>(['spec', 'stackType']);
+const NON_FORWARD_PROPS = new Set<string>(['spec']);
 
 function toInset(theme: Theme, value?: TokenOrRawValue<SpaceToken>): string | undefined {
   return toSpace(theme, value);
@@ -79,11 +79,36 @@ function resolveShadow(theme: Theme, shadow?: ContainerSpec['shadow']) {
   return theme.shadows[shadow];
 }
 
+function resolveInjectedSpec<Props, Spec extends ContainerSpec>(
+  staticSpec: Spec,
+  injectSpec: ContainerInjectSpec<Props, Spec>,
+  props: Props,
+): ContainerSpec {
+  const runtimeSpec = {} as Partial<Spec>;
+
+  (Object.keys(injectSpec) as Array<keyof Spec>).forEach((key) => {
+    const resolver = injectSpec[key];
+    if (!resolver) {
+      return;
+    }
+
+    const value = resolver(props);
+    if (value !== undefined) {
+      runtimeSpec[key] = value;
+    }
+  });
+
+  return {
+    ...staticSpec,
+    ...runtimeSpec,
+  };
+}
+
 const ContainerBase = styled.div.withConfig({
   shouldForwardProp: (prop) => !NON_FORWARD_PROPS.has(String(prop)),
 })<ContainerProps>`
-  ${({ theme, spec, stackType }) => {
-    const resolvedStackType = stackType ?? spec?.stackType ?? null;
+  ${({ theme, spec }) => {
+    const resolvedStackType = spec?.stackType ?? null;
     const surface = resolveSurface(theme, spec?.surface);
     const shadow = resolveShadow(theme, spec?.shadow);
     const radius = toRadius(theme, spec?.radius);
@@ -92,6 +117,12 @@ const ContainerBase = styled.div.withConfig({
     const paddingX = toSpace(theme, spec?.paddingX);
     const paddingY = toSpace(theme, spec?.paddingY);
     const zIndex = toZIndex(theme, spec?.zIndex);
+    const resolvedWidth = toCssSize(spec?.width);
+    const resolvedHeight = toCssSize(spec?.height);
+    const resolvedMinWidth = toCssSize(spec?.minWidth);
+    const resolvedMaxWidth = toCssSize(spec?.maxWidth);
+    const resolvedMinHeight = toCssSize(spec?.minHeight);
+    const resolvedMaxHeight = toCssSize(spec?.maxHeight);
 
     return css`
       ${resolvedStackType
@@ -109,12 +140,12 @@ const ContainerBase = styled.div.withConfig({
       ${toInset(theme, spec?.bottom) ? `bottom: ${toInset(theme, spec?.bottom)};` : ''}
       ${toInset(theme, spec?.left) ? `left: ${toInset(theme, spec?.left)};` : ''}
 
-      ${toCssSize(spec?.width) ? `width: ${toCssSize(spec?.width)};` : ''}
-      ${toCssSize(spec?.height) ? `height: ${toCssSize(spec?.height)};` : ''}
-      ${toCssSize(spec?.minWidth) ? `min-width: ${toCssSize(spec?.minWidth)};` : ''}
-      ${toCssSize(spec?.maxWidth) ? `max-width: ${toCssSize(spec?.maxWidth)};` : ''}
-      ${toCssSize(spec?.minHeight) ? `min-height: ${toCssSize(spec?.minHeight)};` : ''}
-      ${toCssSize(spec?.maxHeight) ? `max-height: ${toCssSize(spec?.maxHeight)};` : ''}
+      ${resolvedWidth ? `width: ${resolvedWidth};` : ''}
+      ${resolvedHeight ? `height: ${resolvedHeight};` : ''}
+      ${resolvedMinWidth ? `min-width: ${resolvedMinWidth};` : ''}
+      ${resolvedMaxWidth ? `max-width: ${resolvedMaxWidth};` : ''}
+      ${resolvedMinHeight ? `min-height: ${resolvedMinHeight};` : ''}
+      ${resolvedMaxHeight ? `max-height: ${resolvedMaxHeight};` : ''}
 
       ${spec?.align ? `align-items: ${spec.align};` : ''}
       ${spec?.justify ? `justify-content: ${spec.justify};` : ''}
@@ -136,8 +167,26 @@ const ContainerBase = styled.div.withConfig({
   }}
 `;
 
-const buildContainer: ContainerBuildFn = (spec) => styled(ContainerBase).attrs({ spec })``;
+function buildContainer<Spec extends ContainerSpec>(spec: Spec) {
+  const built = styled(ContainerBase).attrs<ContainerProps>({ spec })``;
 
-export const Container: ContainerComponent = Object.assign(ContainerBase, {
+  const inject = <Props extends object>(injectSpec: ContainerInjectSpec<Props, Spec>) => {
+    type InjectedContainerProps = Props & ComponentPropsWithoutRef<typeof ContainerBase>;
+
+    const InjectedContainer = (props: InjectedContainerProps) =>
+      createElement(ContainerBase, {
+        ...props,
+        spec: resolveInjectedSpec(spec, injectSpec, props),
+      });
+
+    return styled(InjectedContainer)``;
+  };
+
+  return Object.assign(built, {
+    inject,
+  });
+}
+
+export const Container = Object.assign(ContainerBase, {
   build: buildContainer,
 });

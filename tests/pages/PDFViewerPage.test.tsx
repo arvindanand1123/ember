@@ -56,7 +56,7 @@ describe('PDFViewerPage', () => {
 
   it('rotation control', async () => {
     const pageImage = await screen.findByAltText('Page 1');
-    const pageFrame = pageImage.closest('.pdf-page-frame');
+    const pageFrame = pageImage.parentElement;
     assert(pageFrame);
     assert(pageFrame.getAttribute('data-rotation') === '0');
 
