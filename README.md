@@ -33,7 +33,7 @@ To run the app in development mode:
 
 ```bash
 direnv allow
-just tauri dev
+just dev
 ```
 
 This will start the Vite dev server and launch the Tauri app.
