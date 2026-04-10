@@ -1,12 +1,14 @@
 use ember_lib::core::pdf::{get_backend, PdfBackend};
 use ember_lib::profiling::{
-    ensure_profiling_enabled, end_internal_trace, start_internal_trace, ProfilingData,
-    ProfilingStore, profiling_end_trace, profiling_get_snapshot, profiling_reset,
-    profiling_start_trace,
+    end_internal_trace, ensure_profiling_enabled, profiling_end_trace, profiling_get_snapshot,
+    profiling_reset, profiling_start_trace, start_internal_trace, ProfilingData, ProfilingStore,
 };
 use serde_json::{json, Value};
 use std::{ffi::OsString, sync::Mutex};
-use tauri::{test::{mock_builder, mock_context, noop_assets, MockRuntime}, App, Builder, Manager};
+use tauri::{
+    test::{mock_builder, mock_context, noop_assets, MockRuntime},
+    App, Builder, Manager,
+};
 
 const TEST_PDF: &str = "../tests/basic.pdf";
 static ENV_LOCK: Mutex<()> = Mutex::new(());
@@ -118,7 +120,10 @@ fn test_profiling_store_completed_trace() {
     assert_eq!(event["name"], Value::String("render_page".to_string()));
     assert!(event["durationMs"].is_u64());
     assert_eq!(event["details"]["start"]["page"], Value::from(1));
-    assert_eq!(event["details"]["end"]["imageBytesLength"], Value::from(128));
+    assert_eq!(
+        event["details"]["end"]["imageBytesLength"],
+        Value::from(128)
+    );
     assert!(event["startMemory"].is_object() || event["startMemory"].is_null());
     assert!(event["endMemory"].is_object() || event["endMemory"].is_null());
 }
