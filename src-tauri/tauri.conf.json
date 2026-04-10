@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "identifier": "com.arvind.ember",
   "build": {
-    "beforeDevCommand": "just dev",
+    "beforeDevCommand": "just frontend-dev",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "just build",
     "frontendDist": "../dist"
