@@ -7,8 +7,11 @@ setup:
   pnpm install
   cargo fetch --manifest-path src-tauri/Cargo.toml
 
-dev:
+frontend-dev:
   pnpm exec vite
+
+dev:
+  just tauri dev
 
 build:
   pnpm exec tsc
