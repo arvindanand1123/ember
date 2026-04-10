@@ -38,6 +38,22 @@ just tauri dev
 
 This will start the Vite dev server and launch the Tauri app.
 
+## Profiling
+
+To run the app with profiling enabled:
+
+```bash
+just profile
+```
+
+When profiling is enabled:
+
+- the main app publishes `startTrace`/`endTrace` events into a shared Rust-backed store
+- a separate profiler webview opens and polls that store
+- the event log resets each time a new PDF load starts
+- the frontend still logs timing events to the webview console with a `[profile]` prefix
+- React `StrictMode` is disabled so dev-only double renders do not skew numbers
+
 ## Build
 
 - TBD
