@@ -4,11 +4,11 @@ import { TitleBarRightSpacer } from './TitleBarRightSpacer';
 import { TitleBarRoot } from './TitleBarRoot';
 
 interface TitleBarProps {
-  filePath: string;
+  filePath?: string | null;
 }
 
 export function TitleBar({ filePath }: TitleBarProps) {
-  const fileName = filePath.split(/[\\/]/).pop() || filePath;
+  const fileName = filePath ? (filePath.split(/[\\/]/).pop() || filePath) : 'Ember';
 
   return (
     <TitleBarRoot data-tauri-drag-region>
