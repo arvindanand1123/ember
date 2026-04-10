@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { CommandInput, PDFControls, PDFDocument, PDFViewer, TitleBar } from '../components';
+import { CommandInput, PDFControls, PDFDocument, PDFViewer } from '../components';
 
 interface PDFViewerPageProps {
   filePath: string;
@@ -23,7 +23,6 @@ export default function PDFViewerPage({ filePath, onBack }: PDFViewerPageProps) 
 
   return (
     <PDFViewer>
-      <TitleBar filePath={filePath}/>
       <PDFControls
         currentPage={currentPage}
         numPages={numPages}

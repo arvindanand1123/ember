@@ -15,10 +15,18 @@ afterEach(() => {
 });
 
 describe('App', () => {
+  it('drags', () => {
+    const { container } = render(<App/>);
+
+    assert(screen.getAllByText('Ember').length >= 1);
+    assert(container.querySelector('[data-tauri-drag-region]'));
+  });
+
   it('file select', async () => {
     render(<App/>);
     assert(screen.getByText('Select File'));
     await clickButton({ text: 'Select File' });
+    assert(await screen.findByText('basic.pdf'));
   });
 
   it('pdf view', async () => {
