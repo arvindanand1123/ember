@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import { Container, type ContainerSpec } from './components/Container';
 import { GlobalStyles, theme, TitleBar } from './components';
+import { Container, type ContainerSpec } from './components/Container';
 import { useStable } from './hooks/useStable';
 import FileSelectorPage from './pages/FileSelectorPage';
 import PDFViewerPage from './pages/PDFViewerPage';
