@@ -155,11 +155,14 @@ fn current_process_memory() -> Option<MemorySnapshot> {
     })
 }
 
-pub fn ensure_profiling_enabled() -> Result<(), String> {
-    let profiling_enabled = std::env::var("VITE_PROFILE")
+fn profiling_enabled() -> bool {
+    std::env::var("VITE_PROFILE")
         .map(|value| value == "1")
-        .unwrap_or(false);
-    if !profiling_enabled {
+        .unwrap_or(false)
+}
+
+pub fn ensure_profiling_enabled() -> Result<(), String> {
+    if !profiling_enabled() {
         return Err("Profiling is not enabled".to_string());
     }
     Ok(())
@@ -181,7 +184,10 @@ pub fn start_internal_trace(
     profiling_store: &ProfilingStore,
     data: ProfilingData,
 ) -> Result<(), String> {
-    ensure_profiling_enabled()?;
+    if !profiling_enabled() {
+        return Ok(());
+    }
+
     profiling_store.start_trace(data);
     Ok(())
 }
@@ -190,13 +196,19 @@ pub fn end_internal_trace(
     profiling_store: &ProfilingStore,
     data: ProfilingData,
 ) -> Result<(), String> {
-    ensure_profiling_enabled()?;
+    if !profiling_enabled() {
+        return Ok(());
+    }
+
     profiling_store.end_trace(data);
     Ok(())
 }
 
 pub fn ensure_profiler_window(app: &tauri::AppHandle) -> Result<(), String> {
-    ensure_profiling_enabled()?;
+    if !profiling_enabled() {
+        return Ok(());
+    }
+
     if let Some(window) = app.get_webview_window("profiler") {
         let _ = window.show();
         let _ = window.set_focus();
@@ -220,7 +232,9 @@ pub fn profiling_start_trace(
     profiling_store: State<'_, ProfilingStore>,
     data: ProfilingData,
 ) -> Result<(), String> {
-    start_internal_trace(&profiling_store, data)
+    ensure_profiling_enabled()?;
+    profiling_store.start_trace(data);
+    Ok(())
 }
 
 #[tauri::command]
@@ -228,7 +242,9 @@ pub fn profiling_end_trace(
     profiling_store: State<'_, ProfilingStore>,
     data: ProfilingData,
 ) -> Result<(), String> {
-    end_internal_trace(&profiling_store, data)
+    ensure_profiling_enabled()?;
+    profiling_store.end_trace(data);
+    Ok(())
 }
 
 #[tauri::command]

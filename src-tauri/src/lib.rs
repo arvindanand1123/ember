@@ -104,7 +104,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
-            profiling::ensure_profiler_window(&app.handle())?;
+            profiling::ensure_profiler_window(app.handle())?;
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

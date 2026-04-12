@@ -35,6 +35,12 @@ impl Drop for EnvVarGuard {
     }
 }
 
+fn lock_env() -> std::sync::MutexGuard<'static, ()> {
+    ENV_LOCK
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner())
+}
+
 fn setup() -> Box<dyn PdfBackend> {
     get_backend().expect("Failed to create backend")
 }
@@ -157,7 +163,7 @@ fn test_profiling_store_reset() {
 
 #[test]
 fn test_profiling_not_enabled() {
-    let _env_lock = ENV_LOCK.lock().unwrap();
+    let _env_lock = lock_env();
     let _env_var_guard = EnvVarGuard::without_vite_profile();
 
     let profiling_store = ProfilingStore::default();
@@ -186,7 +192,7 @@ fn test_profiling_not_enabled() {
 
 #[test]
 fn test_profiling_commands_not_enabled() {
-    let _env_lock = ENV_LOCK.lock().unwrap();
+    let _env_lock = lock_env();
     let _env_var_guard = EnvVarGuard::without_vite_profile();
 
     let app = create_profiling_app(mock_builder());
