@@ -23,9 +23,6 @@ preview:
 tauri *args:
   pnpm exec tauri {{args}}
 
-profile:
-  VITE_PROFILE=1 pnpm exec tauri dev
-
 lint:
   pnpm exec eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix
 

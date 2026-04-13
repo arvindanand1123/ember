@@ -38,14 +38,6 @@ just dev
 
 This will start the Vite dev server and launch the Tauri app.
 
-## Profiling
-
-To run the app with profiling enabled:
-
-```bash
-just profile
-```
-
 ## Build
 
 - TBD

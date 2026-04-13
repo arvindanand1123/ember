@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import {
-  profiling,
-  resetProfilingEvents,
-} from '../profiling/profiling';
 import { useInternalDriver } from './useInternalDriver';
 import { useStable } from './useStable';
 
@@ -56,7 +52,6 @@ export function usePdf({
   onPageChange,
 }: UsePdfOptions) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const activeLoadIdRef = useRef(0);
   const [pdfData, setPdfData] = useState<DocumentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,57 +60,14 @@ export function usePdf({
   const { loadPdf, getPageInfo, renderPage } = useInternalDriver();
 
   const getRenderedDocument = useCallback(
-    async (pdfFilePath: string, pdfZoom: number, loadId: number): Promise<DocumentData> => {
+    async (pdfFilePath: string, pdfZoom: number): Promise<DocumentData> => {
       const metadata = await loadPdf(pdfFilePath);
       const pageNumbers = Array.from({ length: metadata.page_count }, (_, i) => i);
       const scale = pdfZoom / 100;
-      const trace = profiling.scoped(() => activeLoadIdRef.current === loadId);
-
-      await trace.startTrace({
-        name: 'getRenderedDocument:renderLoop',
-        details: {
-          filePath: pdfFilePath,
-          zoom: pdfZoom,
-          pageCount: pageNumbers.length,
-        },
-      });
 
       const renderedPages = await Promise.all(pageNumbers.map(async (pageNumber): Promise<RenderedPageData> => {
-        await trace.startTrace({
-          name: `getPageInfo:page:${pageNumber + 1}`,
-          details: {
-            filePath: pdfFilePath,
-            zoom: pdfZoom,
-            page: pageNumber + 1,
-          },
-        });
         const pageInfo = await getPageInfo(pdfFilePath, pageNumber);
-        await trace.endTrace({
-          name: `getPageInfo:page:${pageNumber + 1}`,
-          details: {
-            page: pageNumber + 1,
-            width: pageInfo.width,
-            height: pageInfo.height,
-          },
-        });
-
-        await trace.startTrace({
-          name: `renderPage:page:${pageNumber + 1}`,
-          details: {
-            filePath: pdfFilePath,
-            zoom: pdfZoom,
-            page: pageNumber + 1,
-            scale,
-          },
-        });
         const imageBytes = await renderPage(pdfFilePath, pageNumber, scale);
-        await trace.endTrace({
-          name: `renderPage:page:${pageNumber + 1}`,
-          details: {
-            page: pageNumber + 1,
-            imageBytesLength: imageBytes.length,
-          },
-        });
 
         return {
           index: pageNumber,
@@ -124,15 +76,6 @@ export function usePdf({
           imageBytes,
         };
       }));
-
-      await trace.endTrace({
-        name: 'getRenderedDocument:renderLoop',
-        details: {
-          filePath: pdfFilePath,
-          zoom: pdfZoom,
-          pageCount: pageNumbers.length,
-        },
-      });
 
       const pages = renderedPages.map(({ imageBytes, ...page }) => ({
         ...page,
@@ -153,16 +96,12 @@ export function usePdf({
     let isStale = false;
 
     const loadDocument = async () => {
-      const loadId = activeLoadIdRef.current + 1;
-      activeLoadIdRef.current = loadId;
-
       setLoading(true);
       setError(null);
       setPdfData(null);
-      await resetProfilingEvents();
 
       try {
-        const renderedDocument = await getRenderedDocument(filePath, zoom, loadId);
+        const renderedDocument = await getRenderedDocument(filePath, zoom);
         if (isStale) {
           revokeDocumentUrls(renderedDocument);
           return;

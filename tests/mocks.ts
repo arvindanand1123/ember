@@ -1,23 +1,8 @@
 import { clearMocks as clearTauriApiMocks, mockIPC } from '@tauri-apps/api/mocks';
 import { vi } from 'vitest';
 
-interface MockProfilingEvent {
-  id: number;
-  name: string;
-  startedAtMs: number;
-  endedAtMs: number;
-  durationMs: number;
-  startMemory: { rssBytes: number; virtualBytes: number } | null;
-  endMemory: { rssBytes: number; virtualBytes: number } | null;
-  details: Record<string, unknown>;
-}
-
 interface SetupTauriMockOptions {
   dialogFilePath?: string | null;
-  profilingSnapshot?: {
-    sessionId: number;
-    events: MockProfilingEvent[];
-  };
 }
 
 function createMockRenderBytes(scale = 1, size = 16) {
@@ -38,10 +23,6 @@ let revokeObjectURLMock: ReturnType<typeof vi.fn>;
 
 export function setupTauriMocks(options: SetupTauriMockOptions = {}) {
   const dialogFilePath = options.dialogFilePath ?? null;
-  const profilingSnapshot = options.profilingSnapshot ?? {
-    sessionId: 0,
-    events: [],
-  };
   let objectUrlIndex = 0;
   createObjectURLMock = vi.fn(() => `blob:render-${++objectUrlIndex}`);
   revokeObjectURLMock = vi.fn();
@@ -67,13 +48,6 @@ export function setupTauriMocks(options: SetupTauriMockOptions = {}) {
     }
     if (cmd === 'plugin:dialog|open') {
       return dialogFilePath;
-    }
-
-    if (cmd === 'profiling_get_snapshot') {
-      return profilingSnapshot;
-    }
-    if (cmd === 'profiling_start_trace' || cmd === 'profiling_end_trace' || cmd === 'profiling_reset') {
-      return null;
     }
 
     if (cmd === 'load_pdf' || cmd === 'get_page_info' || cmd === 'render_page') {
