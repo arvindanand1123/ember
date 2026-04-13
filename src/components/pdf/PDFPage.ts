@@ -31,10 +31,12 @@ type PDFPageProps = {
   rotation: number;
 };
 
-export const PDFPage = Container.build(pdfPageSpec).inject<PDFPageProps>({
+export const PDFPage = styled(Container.build(pdfPageSpec).inject<PDFPageProps>({
   width: ({ width, height, rotation }) => (isQuarterTurn(rotation) ? height : width),
   height: ({ width, height, rotation }) => (isQuarterTurn(rotation) ? width : height),
-});
+}))`
+  flex-shrink: 0;
+`;
 
 export const PDFPageFrame = styled(Container.build(pdfPageFrameSpec).inject<PDFPageProps>({
   width: ({ width }) => width,
@@ -44,6 +46,7 @@ export const PDFPageFrame = styled(Container.build(pdfPageFrameSpec).inject<PDFP
   transform-origin: center;
 
   img {
+    display: block;
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
