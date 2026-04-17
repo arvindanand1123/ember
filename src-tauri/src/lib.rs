@@ -1,5 +1,14 @@
 pub mod core;
 
+mod file_api {
+    use crate::core::files;
+
+    #[tauri::command]
+    pub fn save_pdf(source_path: String, target_path: String) -> Result<String, String> {
+        files::save_pdf(&source_path, &target_path).map_err(|e| e.to_string())
+    }
+}
+
 mod pdf_api {
     use crate::core::pdf::{self, PageInfo, PdfMetadata};
 
@@ -44,6 +53,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
+            file_api::save_pdf,
             pdf_api::load_pdf,
             pdf_api::get_page_info,
             pdf_api::render_page,

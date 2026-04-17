@@ -2,11 +2,12 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, assert, beforeEach, describe, it } from 'vitest';
 
 import App from '../../src/App';
+import { APP_MENU_SAVE_AS_EVENT } from '../../src/appMenu';
 import { clearMocks, setupTauriMocks } from '../mocks';
 import { clickButton } from '../utils';
 
 beforeEach(() => {
-  setupTauriMocks('../ember/tests/basic.pdf');
+  setupTauriMocks('../ember/tests/basic.pdf', '/tmp/ember-exported-copy');
 });
 
 afterEach(() => {
@@ -34,5 +35,13 @@ describe('App', () => {
     await clickButton({ text: 'Select File' });
     await clickButton({ text: 'Back' });
     assert(screen.getByText('Select File'));
+  });
+
+  it('save as updates the title to the new file name', async () => {
+    render(<App/>);
+    await clickButton({ text: 'Select File' });
+    window.dispatchEvent(new Event(APP_MENU_SAVE_AS_EVENT));
+
+    assert(await screen.findByText('ember-exported-copy.pdf'));
   });
 });

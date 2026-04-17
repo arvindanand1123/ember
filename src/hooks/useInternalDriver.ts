@@ -2,6 +2,12 @@ import { invoke } from '@tauri-apps/api/core';
 import { useCallback } from 'react';
 
 export function useInternalDriver() {
+  const savePdf = useCallback(
+    (sourcePath: string, targetPath: string): Promise<string> =>
+      invoke<string>('save_pdf', { sourcePath, targetPath }),
+    [],
+  );
+
   const loadPdf = useCallback(
     (filePath: string): Promise<{
       page_count: number;
@@ -38,6 +44,7 @@ export function useInternalDriver() {
   );
 
   return {
+    savePdf,
     loadPdf,
     getPageInfo,
     renderPage,
