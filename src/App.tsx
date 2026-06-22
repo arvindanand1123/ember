@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import { type AppMenuHandle, setupAppMenu } from './appMenu';
 import { GlobalStyles, theme, TitleBar } from './components';
 import { Container, type ContainerSpec } from './components/Container';
+import { useOnMount } from './hooks/useOnMount';
 import { useStable } from './hooks/useStable';
 import FileSelectorPage from './pages/FileSelectorPage';
 import PDFViewerPage from './pages/PDFViewerPage';
@@ -20,37 +21,39 @@ function App() {
     void menuHandleRef.current?.setDocumentActionsEnabled(Boolean(filePath));
   }, [filePath]);
 
-  useEffect(() => {
-    let disposed = false;
+  useOnMount(
+    () => {
+      let disposed = false;
 
-    const initializeMenu = async () => {
-      try {
-        const menuHandle = await setupAppMenu();
+      const initializeMenu = async () => {
+        try {
+          const menuHandle = await setupAppMenu();
 
-        if (disposed) {
-          await menuHandle.dispose();
-          return;
+          if (disposed) {
+            await menuHandle.dispose();
+            return;
+          }
+
+          menuHandleRef.current = menuHandle;
+          await menuHandle.setDocumentActionsEnabled(Boolean(filePathRef.current));
+        } catch (error) {
+          console.error('Failed to set up app menu', error);
         }
+      };
 
-        menuHandleRef.current = menuHandle;
-        await menuHandle.setDocumentActionsEnabled(Boolean(filePathRef.current));
-      } catch (error) {
-        console.error('Failed to set up app menu', error);
-      }
-    };
+      void initializeMenu();
 
-    void initializeMenu();
+      return () => {
+        disposed = true;
+        const menuHandle = menuHandleRef.current;
+        menuHandleRef.current = null;
 
-    return () => {
-      disposed = true;
-      const menuHandle = menuHandleRef.current;
-      menuHandleRef.current = null;
-
-      if (menuHandle) {
-        void menuHandle.dispose();
-      }
-    };
-  }, []);
+        if (menuHandle) {
+          void menuHandle.dispose();
+        }
+      };
+    },
+  );
 
   return (
     <ThemeProvider theme={theme}>
