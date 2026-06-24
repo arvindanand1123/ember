@@ -1,6 +1,10 @@
 import { clearMocks as clearTauriApiMocks, mockIPC } from '@tauri-apps/api/mocks';
 import { vi } from 'vitest';
 
+interface SetupTauriMockOptions {
+  dialogFilePath?: string | null;
+}
+
 function createMockRenderBytes(scale = 1, size = 16) {
   const scaledSize = Math.max(1, Math.round(size * scale));
   return Array.from({ length: scaledSize }, (_, row) =>
@@ -17,7 +21,8 @@ const originalRevokeObjectURL = URL.revokeObjectURL;
 let createObjectURLMock: ReturnType<typeof vi.fn>;
 let revokeObjectURLMock: ReturnType<typeof vi.fn>;
 
-export function setupTauriMocks(dialogFilePath: string | null = null) {
+export function setupTauriMocks(options: SetupTauriMockOptions = {}) {
+  const dialogFilePath = options.dialogFilePath ?? null;
   let objectUrlIndex = 0;
   createObjectURLMock = vi.fn(() => `blob:render-${++objectUrlIndex}`);
   revokeObjectURLMock = vi.fn();

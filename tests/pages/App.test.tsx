@@ -6,7 +6,7 @@ import { clearMocks, setupTauriMocks } from '../mocks';
 import { clickButton } from '../utils';
 
 beforeEach(() => {
-  setupTauriMocks('../ember/tests/basic.pdf');
+  setupTauriMocks({ dialogFilePath: '../ember/tests/basic.pdf' });
 });
 
 afterEach(() => {

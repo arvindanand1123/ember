@@ -68,6 +68,7 @@ export function usePdf({
       const renderedPages = await Promise.all(pageNumbers.map(async (pageNumber): Promise<RenderedPageData> => {
         const pageInfo = await getPageInfo(pdfFilePath, pageNumber);
         const imageBytes = await renderPage(pdfFilePath, pageNumber, scale);
+
         return {
           index: pageNumber,
           width: pageInfo.width * scale,

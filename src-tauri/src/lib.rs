@@ -28,10 +28,10 @@ mod pdf_api {
         page_index: u16,
         scale: Option<f32>,
     ) -> Result<Vec<u8>, String> {
+        let scale_factor = scale.unwrap_or(1.0);
         let backend = pdf::get_backend().map_err(|e| e.to_string())?;
         let document = backend.open(&file_path)?;
 
-        let scale_factor = scale.unwrap_or(1.0);
         document
             .render_page(page_index, scale_factor)
             .map_err(|e| e.to_string())
