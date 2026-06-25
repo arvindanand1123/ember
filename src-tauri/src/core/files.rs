@@ -10,13 +10,9 @@ fn ensure_pdf_extension(path: PathBuf) -> PathBuf {
     }
 }
 
-pub fn normalized_pdf_path(target_path: &str) -> PathBuf {
-    ensure_pdf_extension(PathBuf::from(target_path))
-}
-
 pub fn save_pdf(source_path: &str, target_path: &str) -> Result<String, io::Error> {
     let source = Path::new(source_path);
-    let target = normalized_pdf_path(target_path);
+    let target = ensure_pdf_extension(PathBuf::from(target_path));
 
     if !source.exists() {
         return Err(io::Error::new(
@@ -25,15 +21,12 @@ pub fn save_pdf(source_path: &str, target_path: &str) -> Result<String, io::Erro
         ));
     }
 
-    if source == target {
-        return Ok(target.to_string_lossy().into_owned());
+    if source != target {
+        if let Some(parent) = target.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        fs::copy(source, &target)?;
     }
-
-    if let Some(parent) = target.parent() {
-        fs::create_dir_all(parent)?;
-    }
-
-    fs::copy(source, &target)?;
 
     Ok(target.to_string_lossy().into_owned())
 }

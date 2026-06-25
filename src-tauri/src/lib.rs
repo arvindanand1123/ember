@@ -1,6 +1,6 @@
 pub mod core;
 
-mod file_api {
+pub mod file_api {
     use crate::core::files;
 
     #[tauri::command]
@@ -9,7 +9,7 @@ mod file_api {
     }
 }
 
-mod pdf_api {
+pub mod pdf_api {
     use crate::core::pdf::{self, PageInfo, PdfMetadata};
 
     #[tauri::command]
