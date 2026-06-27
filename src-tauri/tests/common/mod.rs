@@ -13,8 +13,8 @@ impl TempDir {
             .expect("time should move forward")
             .as_nanos();
 
-        let path = std::env::temp_dir()
-            .join(format!("ember-{name}-{timestamp}-{}", std::process::id()));
+        let path =
+            std::env::temp_dir().join(format!("ember-{name}-{timestamp}-{}", std::process::id()));
 
         Self { path }
     }
