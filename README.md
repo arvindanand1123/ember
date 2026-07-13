@@ -1,5 +1,5 @@
 # Ember
-[Charter](https://www.notion.so/Charter-2d98e8006a5080afa056c6cfe124c97c?source=copy_link)
+[Charter](https://fir-toad-794.notion.site/Ember-Charter-2d98e8006a5080afa056c6cfe124c97c?source=copy_link)
 
 ## Prerequisites
 
