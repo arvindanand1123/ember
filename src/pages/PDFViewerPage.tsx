@@ -133,7 +133,6 @@ export default function PDFViewerPage({ filePath, onBack, onFilePathChange }: PD
         numPages={numPages}
         zoom={zoom}
         saveMessage={saveFeedback?.message}
-        saveTone={saveFeedback?.tone}
         onBack={onBack}
         onRotate={handleRotate}
         onZoomChange={setZoom}

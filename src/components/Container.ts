@@ -34,6 +34,7 @@ export interface ContainerSpec {
   shadow?: 'none' | ShadowToken;
   zIndex?: TokenOrRawValue<ZIndexToken>;
   overflow?: CSSProperties['overflow'];
+  fontSize?: TokenOrRawValue<FontSizeToken>
 }
 
 interface ContainerProps {
