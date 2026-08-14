@@ -4,6 +4,7 @@ import { APP_MENU_SAVE_AS_EVENT, APP_MENU_SAVE_EVENT } from '../appMenu';
 import { CommandInput, PDFControls, PDFDocument, PDFViewer } from '../components';
 import { useExternalDriver } from '../hooks/useExternalDriver';
 import { useInternalDriver } from '../hooks/useInternalDriver';
+import { useOnMount } from '../hooks/useOnMount';
 import { useStable } from '../hooks/useStable';
 
 interface PDFViewerPageProps {
@@ -98,7 +99,7 @@ export default function PDFViewerPage({ filePath, onBack, onFilePathChange }: PD
     }
   });
 
-  useEffect(() => {
+  useOnMount(() => {
     const onMenuSave = () => {
       void handleSave();
     };
@@ -113,7 +114,7 @@ export default function PDFViewerPage({ filePath, onBack, onFilePathChange }: PD
       window.removeEventListener(APP_MENU_SAVE_EVENT, onMenuSave);
       window.removeEventListener(APP_MENU_SAVE_AS_EVENT, onMenuSaveAs);
     };
-  }, [handleSave, handleSaveAs]);
+  });
 
   return (
     <PDFViewer>
