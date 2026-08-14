@@ -1,8 +1,8 @@
-import { save } from '@tauri-apps/plugin-dialog';
 import { useCallback, useEffect, useState } from 'react';
 
 import { APP_MENU_SAVE_AS_EVENT, APP_MENU_SAVE_EVENT } from '../appMenu';
 import { CommandInput, PDFControls, PDFDocument, PDFViewer } from '../components';
+import { useExternalDriver } from '../hooks/useExternalDriver';
 import { useInternalDriver } from '../hooks/useInternalDriver';
 import { useStable } from '../hooks/useStable';
 
@@ -29,6 +29,7 @@ export default function PDFViewerPage({ filePath, onBack, onFilePathChange }: PD
   const [isSaving, setIsSaving] = useState(false);
   const [saveFeedback, setSaveFeedback] = useState<SaveFeedback | null>(null);
   const { savePdf } = useInternalDriver();
+  const { addPath } = useExternalDriver();
 
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -74,13 +75,7 @@ export default function PDFViewerPage({ filePath, onBack, onFilePathChange }: PD
     if (isSaving) return;
 
     try {
-      const targetPath = await save({
-        defaultPath: filePath,
-        filters: [{
-          name: 'PDF',
-          extensions: ['pdf'],
-        }],
-      });
+      const targetPath = await addPath(filePath);
 
       if (!targetPath) return;
 
