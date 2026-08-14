@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import { type AppMenuHandle, setupAppMenu } from './appMenu';
@@ -11,31 +11,30 @@ import PDFViewerPage from './pages/PDFViewerPage';
 
 function App() {
   const [filePath, setFilePath] = useState<string | null>(null);
-  const menuHandleRef = useRef<AppMenuHandle | null>(null);
-  const filePathRef = useRef<string | null>(filePath);
+  const [menuHandle, setMenuHandle] = useState<AppMenuHandle | null>(null);
 
   const handleBack = useStable(() => setFilePath(null));
 
   useEffect(() => {
-    filePathRef.current = filePath;
-    void menuHandleRef.current?.setDocumentActionsEnabled(Boolean(filePath));
-  }, [filePath]);
+    void menuHandle?.setDocumentActionsEnabled(Boolean(filePath));
+  }, [menuHandle, filePath]);
 
   useOnMount(
     () => {
       let disposed = false;
+      let handle: AppMenuHandle | null = null;
 
       const initializeMenu = async () => {
         try {
-          const menuHandle = await setupAppMenu();
+          handle = await setupAppMenu();
 
           if (disposed) {
-            await menuHandle.dispose();
+            await handle.dispose();
+            handle = null;
             return;
           }
 
-          menuHandleRef.current = menuHandle;
-          await menuHandle.setDocumentActionsEnabled(Boolean(filePathRef.current));
+          setMenuHandle(handle);
         } catch (error) {
           console.error('Failed to set up app menu', error);
         }
@@ -45,11 +44,10 @@ function App() {
 
       return () => {
         disposed = true;
-        const menuHandle = menuHandleRef.current;
-        menuHandleRef.current = null;
+        setMenuHandle(null);
 
-        if (menuHandle) {
-          void menuHandle.dispose();
+        if (handle) {
+          void handle.dispose();
         }
       };
     },

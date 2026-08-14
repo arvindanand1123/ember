@@ -48,12 +48,6 @@ export default function PDFViewerPage({ filePath, onBack, onFilePathChange }: PD
     return () => window.clearTimeout(timeout);
   }, [saveFeedback]);
 
-  useEffect(() => {
-    setRotation(0);
-    setZoom(100);
-    setSaveFeedback(null);
-  }, [filePath]);
-
   const handleSave = useStable(async () => {
     if (isSaving) return;
 
