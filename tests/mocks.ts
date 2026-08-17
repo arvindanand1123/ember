@@ -26,9 +26,6 @@ export function setupTauriMocks(
   let objectUrlIndex = 0;
   createObjectURLMock = vi.fn(() => `blob:render-${++objectUrlIndex}`);
   revokeObjectURLMock = vi.fn();
-  const savePdfMock = vi.fn((sourcePath: string, targetPath: string) =>
-    targetPath.toLowerCase().endsWith('.pdf') ? targetPath : `${targetPath}.pdf`,
-  );
 
   Object.defineProperty(URL, 'createObjectURL', {
     configurable: true,
@@ -56,7 +53,10 @@ export function setupTauriMocks(
       return saveDialogFilePath;
     }
     if (cmd === 'plugin:menu|new') {
-      const options = payload?.options as { id?: string } | undefined;
+      const options =
+        payload && 'options' in payload
+          ? (payload.options as { id?: string } | undefined)
+          : undefined;
       return [nextMenuRid++, options?.id ?? `menu-item-${nextMenuRid}`];
     }
     if (cmd === 'plugin:menu|set_as_app_menu' || cmd === 'plugin:menu|set_enabled') {
@@ -70,8 +70,9 @@ export function setupTauriMocks(
       if (!payload || !('sourcePath' in payload) || !('targetPath' in payload)) {
         throw new Error('save_pdf: sourcePath and targetPath are required');
       }
-
-      return savePdfMock(payload.sourcePath as string, payload.targetPath as string);
+      return vi.fn((_sourcePath: string, targetPath: string) =>
+        targetPath.toLowerCase().endsWith('.pdf') ? targetPath : `${targetPath}.pdf`,
+      );
     }
 
     if (cmd === 'load_pdf' || cmd === 'get_page_info' || cmd === 'render_page') {
@@ -105,7 +106,6 @@ export function setupTauriMocks(
   return {
     createObjectURLMock,
     revokeObjectURLMock,
-    savePdfMock,
   };
 }
 
