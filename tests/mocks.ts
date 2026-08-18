@@ -32,7 +32,10 @@ export interface MenuSnapshot {
   items?: MenuSnapshot[];
 }
 
-export function setupTauriMocks(dialogFilePath: string | null = null) {
+export function setupTauriMocks(
+  dialogFilePath: string | null = null,
+  saveDialogFilePath: string | null = null,
+) {
   const menuNodes = new Map<number, MenuSnapshot & { itemRids: number[] }>();
   let nextMenuRid = 1;
   let appMenuRid: number | null = null;
@@ -83,6 +86,9 @@ export function setupTauriMocks(dialogFilePath: string | null = null) {
     if (cmd === 'plugin:dialog|open') {
       return dialogFilePath;
     }
+    if (cmd === 'plugin:dialog|save') {
+      return saveDialogFilePath;
+    }
 
     if (cmd === 'plugin:menu|new') {
       const { kind, options } = payload as unknown as MenuNewPayload;
@@ -104,6 +110,9 @@ export function setupTauriMocks(dialogFilePath: string | null = null) {
       return null;
     }
 
+    if (cmd === 'save_pdf') {
+      return args.targetPath as string;
+    }
     if (cmd === 'load_pdf') {
       return { page_count: 1, title: 'Title', author: null };
     }
