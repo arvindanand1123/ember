@@ -8,9 +8,6 @@ import PDFViewerPage from '../../src/pages/PDFViewerPage';
 import { clearMocks, setupTauriMocks } from '../mocks';
 import { clickButton, noop } from '../utils';
 
-const FILE_PATH = '../ember/tests/basic.pdf';
-const SAVE_AS_PATH = '../ember/tests/copy.pdf';
-
 let revokeObjectURLMock: ReturnType<typeof setupTauriMocks>['revokeObjectURLMock'];
 
 async function dispatchAppMenuEvent(eventName: string) {
@@ -20,11 +17,11 @@ async function dispatchAppMenuEvent(eventName: string) {
 }
 
 beforeEach(() => {
-  ({  revokeObjectURLMock } = setupTauriMocks(null, SAVE_AS_PATH));
+  ({  revokeObjectURLMock } = setupTauriMocks(null, '../ember/tests/copy.pdf'));
   render(
     <ThemeProvider theme={theme}>
       <PDFViewerPage
-        filePath={FILE_PATH}
+        filePath={'../ember/tests/basic.pdf'}
         onBack={noop}
         onFilePathChange={vi.fn()}
       />
