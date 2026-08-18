@@ -20,7 +20,7 @@ afterEach(() => {
 });
 
 describe('App', () => {
-  it('init', () => {
+  it('inits', () => {
     assert.deepEqual(getAppMenu(), [
       {
         kind: 'Submenu',
@@ -43,12 +43,12 @@ describe('App', () => {
     assert(container.querySelector('[data-tauri-drag-region]'));
   });
 
-  it('file select', async () => {
+  it('file selects', async () => {
     await clickButton({ text: 'Select File' });
     assert(await screen.findByText('basic.pdf'));
   });
 
-  it('pdf view', async () => {
+  it('pdf views', async () => {
     await clickButton({ text: 'Select File' });
     await clickButton({ text: 'Back' });
     assert(screen.getByText('Select File'));

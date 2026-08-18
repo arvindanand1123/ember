@@ -17,7 +17,7 @@ afterEach(() => {
 });
 
 describe('FileSelectorPage', () => {
-  it('basic', async () => {
+  it('inits', async () => {
     render(
       <ThemeProvider theme={theme}>
         <FileSelectorPage onFileSelected={noop}/>

@@ -28,17 +28,17 @@ afterEach(() => {
 });
 
 describe('PDFViewerPage', () => {
-  it('basic', async () => {
+  it('inits', async () => {
     assert(await screen.findByText('Loading document...'));
     assert(await screen.findByText('Page 1 of 1'));
   });
 
-  it('document', async () => {
+  it('renders', async () => {
     const image = await screen.findByAltText('Page 1');
     assert(image.getAttribute('src') === 'blob:render-1');
   });
 
-  it('revokes object urls when rerendering and unmounting', async () => {
+  it('rerenders', async () => {
     await screen.findByAltText('Page 1');
     await clickButton({ label: 'Zoom in' });
 
@@ -50,7 +50,7 @@ describe('PDFViewerPage', () => {
     assert(revokeObjectURLMock.mock.calls[1][0] === 'blob:render-2');
   });
 
-  it('zoom', async () => {
+  it('zooms', async () => {
     await clickButton({ label: 'Zoom in' });
     assert(await screen.findByText('125%'));
 
@@ -58,7 +58,7 @@ describe('PDFViewerPage', () => {
     assert(await screen.findByText('100%'));
   });
 
-  it('rotation control', async () => {
+  it('rotates', async () => {
     const pageImage = await screen.findByAltText('Page 1');
     const pageFrame = pageImage.parentElement;
     assert(pageFrame);
