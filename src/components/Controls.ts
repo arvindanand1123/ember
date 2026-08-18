@@ -2,12 +2,10 @@ import * as RadixIcons from '@radix-ui/react-icons';
 import { type ComponentType, createElement, type CSSProperties, type ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-import { type DimensionValue, type RadiusToken, type SpaceToken, toCssSize, type TokenOrRawValue, toRadius, toSpace } from './shared';
-import type { Theme } from './theme';
+import { type DimensionValue, FontSizeToken, type RadiusToken, type SpaceToken, type Theme, toCssSize, type TokenOrRawValue, toRadius, toSpace } from './theme';
 
 type ControlSizeToken = keyof Theme['controlSizes'];
 type IconSizeToken = keyof Theme['iconSizes'];
-type FontSizeToken = keyof Theme['fontSizes'];
 type FontWeightToken = keyof Theme['fontWeights'];
 type ShadowToken = keyof Theme['shadows'];
 type ColorToken = keyof Theme['colors'];

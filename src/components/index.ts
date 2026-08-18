@@ -7,7 +7,6 @@ export { Controls } from './Controls';
 export { ErrorText, FileSelector, HintText } from './file-selector';
 export { GlobalStyles } from './GlobalStyles';
 export { PageInfo, PDFControls, PDFControlsContainer, PDFDocument, PDFDocumentContainer, PDFPage, PDFPageNumber, PDFViewer } from './pdf';
-export * from './styles';
 export type { Theme, ThemeMode } from './theme';
 export { colors, controlSizes, createTheme, fonts, fontSizes, fontWeights, iconSizes, layoutSizes, lineHeights, motion, radii, semanticSpacing, shadows, space, theme, zIndex } from './theme';
 export { TitleBar } from './title-bar';

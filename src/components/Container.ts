@@ -1,8 +1,7 @@
 import { type ComponentPropsWithoutRef, createElement, type CSSProperties } from 'react';
 import styled, { css } from 'styled-components';
 
-import { type DimensionValue, type RadiusToken, type SpaceToken, toCssSize, type TokenOrRawValue, toRadius, toSpace } from './shared';
-import type { Theme } from './theme';
+import { type DimensionValue, FontSizeToken, type RadiusToken, type SpaceToken, type Theme, toCssSize, type TokenOrRawValue, toRadius, toSpace } from './theme';
 
 export type ContainerStackType = 'row' | 'col' | null;
 
@@ -34,6 +33,7 @@ export interface ContainerSpec {
   shadow?: 'none' | ShadowToken;
   zIndex?: TokenOrRawValue<ZIndexToken>;
   overflow?: CSSProperties['overflow'];
+  fontSize?: TokenOrRawValue<FontSizeToken>
 }
 
 interface ContainerProps {
