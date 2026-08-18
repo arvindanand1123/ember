@@ -8,10 +8,6 @@ function dispatchAppMenuEvent(eventName: string) {
 }
 
 function canUseNativeMenu() {
-  if (import.meta.env.MODE === 'test') {
-    return false;
-  }
-
   const tauriInternals = (window as Window & {
     __TAURI_INTERNALS__?: { transformCallback?: unknown };
   }).__TAURI_INTERNALS__;
