@@ -11,10 +11,7 @@ let getAppMenu: ReturnType<typeof setupTauriMocks>['getAppMenu'];
 beforeEach(async () => {
   ({ getAppMenu } = setupTauriMocks('../ember/tests/basic.pdf'));
   ({ container } = render(<App/>));
-
-  // `clearMocks` deletes the IPC internals, so the async menu setup has to
-  // finish before a test ends or its remaining `Menu.new` calls throw.
-  await waitFor(() => assert(getAppMenu(), 'app menu was never set'));
+  await waitFor(() => assert(getAppMenu()));
 });
 
 afterEach(() => {
