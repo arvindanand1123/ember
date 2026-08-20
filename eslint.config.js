@@ -58,6 +58,21 @@ export default [
       'prefer-const': 'error',
       'no-var': 'error',
 
+      // `useStable` is the default for stabilizing a function; `useCallback` is the
+      // exception. Sites where the identity genuinely must change with the closure keep
+      // `useCallback` behind a suppression naming this rule and stating why.
+      'no-restricted-imports': ['error', {
+        paths: [{
+          name: 'react',
+          importNames: ['useCallback'],
+          message: 'Use useStable (src/hooks/useStable.ts) instead: it gives a fresh closure AND a permanently stable identity. Keep useCallback only when the identity must change as the closure changes (e.g. it is a dependency of an effect that must re-run), and suppress this rule with a reason.',
+        }],
+      }],
+      'no-restricted-syntax': ['error', {
+        selector: "MemberExpression[object.name='React'][property.name='useCallback']",
+        message: 'Use useStable (src/hooks/useStable.ts) instead of React.useCallback. Keep useCallback only when the identity must change as the closure changes, and suppress this rule with a reason.',
+      }],
+
       'indent': ['error', 2, { SwitchCase: 1 }],
       'quotes': ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
       'semi': ['error', 'always'],

@@ -1,5 +1,4 @@
-import { useCallback } from 'react';
-
+import { useStable } from '../../hooks/useStable';
 import { IconButton } from './IconButton';
 import { ZoomContainer } from './ZoomContainer';
 import { ZoomPercentage } from './ZoomPercentage';
@@ -14,15 +13,15 @@ const MAX_ZOOM = 300;
 const ZOOM_STEP = 25;
 
 export function ZoomControls({ zoom, onZoomChange }: ZoomControlsProps) {
-  const handleZoomOut = useCallback(() => {
+  const handleZoomOut = useStable(() => {
     const newZoom = Math.max(MIN_ZOOM, zoom - ZOOM_STEP);
     onZoomChange(newZoom);
-  }, [zoom, onZoomChange]);
+  });
 
-  const handleZoomIn = useCallback(() => {
+  const handleZoomIn = useStable(() => {
     const newZoom = Math.min(MAX_ZOOM, zoom + ZOOM_STEP);
     onZoomChange(newZoom);
-  }, [zoom, onZoomChange]);
+  });
 
   return (
     <ZoomContainer>

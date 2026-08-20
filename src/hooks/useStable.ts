@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports -- useStable cannot implement itself; sole sanctioned useCallback
 import { useCallback, useLayoutEffect, useRef } from 'react';
 
 // fine for O(1) layer
