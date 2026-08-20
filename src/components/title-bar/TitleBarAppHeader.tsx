@@ -19,13 +19,13 @@ const AppHeader = styled.div`
 `;
 
 const AppMark = styled.img`
-  width: 16px;
-  height: 16px;
+  width: ${({ theme }) => theme.iconSizes.md};
+  height: ${({ theme }) => theme.iconSizes.md};
   display: block;
 `;
 
 const AppName = styled.span`
-  font-size: 12px;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   color: ${({ theme }) => theme.colors.text};
 `;

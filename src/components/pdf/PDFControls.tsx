@@ -1,7 +1,6 @@
 
 import { Container } from '../Container';
 import { ControlsLeft, ControlsRight, RotateButton, SecondaryButton, ZoomControls } from '../control-elements';
-import { theme } from '../theme';
 import { PageInfo } from './PageInfo';
 import { PDFControlsContainer } from './PDFControlsContainer';
 
@@ -42,4 +41,4 @@ export default function PDFControls({
   );
 }
 
-const SaveFeedback = Container.build({ fontSize: theme.fontSizes.sm });
+const SaveFeedback = Container.build({ fontSize: 'sm' });

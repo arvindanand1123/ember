@@ -1,9 +1,9 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, assert, beforeEach, describe, it } from 'vitest';
 
-import App from '../../src/App';
-import { clearMocks, setupTauriMocks } from '../mocks';
-import { clickButton } from '../utils';
+import App from '../src/App';
+import { clearMocks, setupTauriMocks } from './mocks';
+import { clickButton } from './utils';
 
 let container: HTMLElement;
 let getAppMenu: ReturnType<typeof setupTauriMocks>['getAppMenu'];
