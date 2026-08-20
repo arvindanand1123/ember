@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import { Container, type ContainerSpec } from '../Container';
 
-export const TitleBarNativeControlsSpacer = styled.div`
-  width: 72px;
-  height: 12px;
-`;
+export const TitleBarNativeControlsSpacer = Container.build({
+  width: 72,
+  height: 12,
+} satisfies ContainerSpec);

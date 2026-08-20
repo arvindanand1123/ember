@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import flameGlyph from '../../assets/ember-flame.svg';
+import { Container, type ContainerSpec } from '../Container';
 
 export function TitleBarAppHeader() {
   return (
@@ -11,12 +12,13 @@ export function TitleBarAppHeader() {
   );
 }
 
-const AppHeader = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.space[2]};
-  -webkit-app-region: no-drag;
-`;
+const AppHeader = Container.build({
+  stackType: 'row',
+  inline: true,
+  align: 'center',
+  gap: 2,
+  appRegion: 'no-drag',
+} satisfies ContainerSpec);
 
 const AppMark = styled.img`
   width: ${({ theme }) => theme.iconSizes.md};

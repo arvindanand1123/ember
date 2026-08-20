@@ -1,5 +1,4 @@
-import styled from 'styled-components';
-
+import { Container, type ContainerSpec } from '../Container';
 import { TitleBarAppHeader } from './TitleBarAppHeader';
 import { TitleBarDivider } from './TitleBarDivider';
 import { TitleBarNativeControlsSpacer } from './TitleBarNativeControlsSpacer';
@@ -14,9 +13,9 @@ export function TitleBarLeft() {
   );
 }
 
-const LeftCluster = styled.div`
-  min-width: 280px;
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.space[2]};
-`;
+const LeftCluster = Container.build({
+  stackType: 'row',
+  align: 'center',
+  gap: 2,
+  minWidth: 280,
+} satisfies ContainerSpec);

@@ -246,3 +246,15 @@ export function toRadius(theme: Theme, value?: TokenOrRawValue<RadiusToken>): st
   }
   return value;
 }
+
+export type ColorToken = keyof Theme['colors'];
+export type ColorTokenOrRawValue = ColorToken | string;
+
+export function resolveColor(theme: Theme, value?: ColorTokenOrRawValue | 'transparent'): string | undefined {
+  if (value === undefined) return undefined;
+  if (value === 'transparent') return value;
+  if (Object.prototype.hasOwnProperty.call(theme.colors, value)) {
+    return theme.colors[value as ColorToken];
+  }
+  return value;
+}

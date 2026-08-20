@@ -1,5 +1,3 @@
-import styled from 'styled-components';
+import { Container, type ContainerSpec } from '../Container';
 
-export const TitleBarRightSpacer = styled.div`
-  min-width: 280px;
-`;
+export const TitleBarRightSpacer = Container.build({ minWidth: 280 } satisfies ContainerSpec);

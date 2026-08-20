@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import { Container, type ContainerSpec } from '../Container';
 
-export const PageInfo = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  color: ${({ theme }) => theme.colors.textMuted};
-`;
+export const PageInfo = Container.build({
+  fontSize: 'sm',
+  textColor: 'textMuted',
+} satisfies ContainerSpec);

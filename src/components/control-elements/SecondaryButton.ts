@@ -1,10 +1,8 @@
 import { Controls, type ControlSpec } from '../Controls';
 
-const secondaryButtonSpec: ControlSpec = {
+export const SecondaryButton = Controls.build({
   size: 'sm',
   paddingX: 4,
   paddingY: 2,
   fontSize: 'sm',
-};
-
-export const SecondaryButton = Controls.build(secondaryButtonSpec);
+} satisfies ControlSpec);

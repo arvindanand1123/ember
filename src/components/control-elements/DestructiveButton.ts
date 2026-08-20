@@ -1,7 +1,5 @@
 import { Controls, type ControlSpec } from '../Controls';
 
-const destructiveButtonSpec: ControlSpec = {
+export const DestructiveButton = Controls.build({
   variant: 'destructive',
-};
-
-export const DestructiveButton = Controls.build(destructiveButtonSpec);
+} satisfies ControlSpec);

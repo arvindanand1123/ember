@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import { Container, type ContainerSpec } from '../Container';
 
-export const TitleBarDivider = styled.div`
-  width: 1px;
-  height: 20px;
-  background: ${({ theme }) => theme.colors.border};
-`;
+export const TitleBarDivider = Container.build({
+  width: 1,
+  height: 20,
+  background: 'border',
+} satisfies ContainerSpec);

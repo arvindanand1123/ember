@@ -2,7 +2,7 @@
 import { Container, type ContainerSpec } from '../Container';
 import { semanticSpacing } from '../theme';
 
-const pdfControlsContainerSpec: ContainerSpec = {
+export const PDFControlsContainer = Container.build({
   stackType: 'row',
   justify: 'space-between',
   align: 'center',
@@ -12,6 +12,4 @@ const pdfControlsContainerSpec: ContainerSpec = {
   surface: 'surface',
   border: 'bottom',
   shadow: 'md',
-};
-
-export const PDFControlsContainer = Container.build(pdfControlsContainerSpec);
+} satisfies ContainerSpec);

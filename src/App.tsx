@@ -74,11 +74,9 @@ function App() {
 
 export default App;
 
-const appShellSpec = {
+const AppShell = Container.build({
   width: '100%',
   height: '100vh',
   stackType: 'col',
   overflow: 'hidden',
-} satisfies ContainerSpec;
-
-const AppShell = Container.build(appShellSpec);
+} satisfies ContainerSpec);

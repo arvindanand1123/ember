@@ -4,7 +4,13 @@ import { Container, type ContainerSpec } from '../Container';
 
 const isQuarterTurn = (rotation: number) => rotation % 180 !== 0;
 
-const pdfPageSpec = {
+type PDFPageProps = {
+  width: number;
+  height: number;
+  rotation: number;
+};
+
+export const PDFPage = styled(Container.build({
   stackType: 'row',
   align: 'center',
   justify: 'center',
@@ -15,30 +21,20 @@ const pdfPageSpec = {
   overflow: 'hidden',
   width: 0,
   height: 0,
-} satisfies ContainerSpec;
-
-const pdfPageFrameSpec = {
-  stackType: 'row',
-  align: 'center',
-  justify: 'center',
-  width: 0,
-  height: 0,
-} satisfies ContainerSpec;
-
-type PDFPageProps = {
-  width: number;
-  height: number;
-  rotation: number;
-};
-
-export const PDFPage = styled(Container.build(pdfPageSpec).inject<PDFPageProps>({
+} satisfies ContainerSpec).inject<PDFPageProps>({
   width: ({ width, height, rotation }) => (isQuarterTurn(rotation) ? height : width),
   height: ({ width, height, rotation }) => (isQuarterTurn(rotation) ? width : height),
 }))`
   flex-shrink: 0;
 `;
 
-export const PDFPageFrame = styled(Container.build(pdfPageFrameSpec).inject<PDFPageProps>({
+export const PDFPageFrame = styled(Container.build({
+  stackType: 'row',
+  align: 'center',
+  justify: 'center',
+  width: 0,
+  height: 0,
+} satisfies ContainerSpec).inject<PDFPageProps>({
   width: ({ width }) => width,
   height: ({ height }) => height,
 }))`
