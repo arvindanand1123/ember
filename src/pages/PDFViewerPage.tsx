@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { APP_MENU_SAVE_AS_EVENT, APP_MENU_SAVE_EVENT } from '../appMenu';
 import { CommandInput, PDFControls, PDFDocument, PDFViewer } from '../components';
@@ -32,13 +32,13 @@ export default function PDFViewerPage({ filePath, onBack, onFilePathChange }: PD
   const { savePdf } = useInternalDriver();
   const { addPath } = useExternalDriver();
 
-  const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
+  const onDocumentLoadSuccess = useStable(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
-  }, [setNumPages]);
+  });
 
-  const handleRotate = useCallback(() => {
+  const handleRotate = useStable(() => {
     setRotation((currentRotation) => (currentRotation + 90) % 360);
-  }, []);
+  });
 
   useEffect(() => {
     if (!saveFeedback) return undefined;

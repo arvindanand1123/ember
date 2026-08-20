@@ -2,16 +2,14 @@ import styled from 'styled-components';
 
 import { Container, type ContainerSpec } from '../Container';
 
-const fileSelectorSpec = {
+export const FileSelector = styled(Container.build({
   width: '100%',
   stackType: 'col',
   justify: 'center',
   align: 'center',
   padding: 6,
   radius: 'lg',
-} satisfies ContainerSpec;
-
-export const FileSelector = styled(Container.build(fileSelectorSpec))<{ $isDragging?: boolean }>`
+} satisfies ContainerSpec))<{ $isDragging?: boolean }>`
   flex: 1;
   text-align: center;
   border: 2px dashed ${({ $isDragging, theme }) => ($isDragging ? theme.colors.accent : 'transparent')};

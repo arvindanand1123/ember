@@ -1,9 +1,12 @@
 import { type ComponentPropsWithoutRef, createElement, type CSSProperties } from 'react';
 import styled, { css } from 'styled-components';
 
-import { type DimensionValue, FontSizeToken, type RadiusToken, type SpaceToken, type Theme, toCssSize, type TokenOrRawValue, toRadius, toSpace } from './theme';
+import { type ColorTokenOrRawValue, type DimensionValue, FontSizeToken, type RadiusToken, resolveColor, type SpaceToken, type Theme, toCssSize, type TokenOrRawValue, toRadius, toSpace } from './theme';
 
 export type ContainerStackType = 'row' | 'col' | null;
+
+/** Insets take space tokens, but also raw lengths like `50%` that no token can express. */
+type InsetValue = TokenOrRawValue<SpaceToken> | (string & {});
 
 type ShadowToken = keyof Theme['shadows'];
 type ZIndexToken = keyof Theme['zIndex'];
@@ -11,10 +14,10 @@ type ZIndexToken = keyof Theme['zIndex'];
 export interface ContainerSpec {
   stackType?: ContainerStackType;
   position?: CSSProperties['position'];
-  top?: TokenOrRawValue<SpaceToken>;
-  right?: TokenOrRawValue<SpaceToken>;
-  bottom?: TokenOrRawValue<SpaceToken>;
-  left?: TokenOrRawValue<SpaceToken>;
+  top?: InsetValue;
+  right?: InsetValue;
+  bottom?: InsetValue;
+  left?: InsetValue;
   width?: DimensionValue;
   height?: DimensionValue;
   minWidth?: DimensionValue;
@@ -33,7 +36,15 @@ export interface ContainerSpec {
   shadow?: 'none' | ShadowToken;
   zIndex?: TokenOrRawValue<ZIndexToken>;
   overflow?: CSSProperties['overflow'];
-  fontSize?: TokenOrRawValue<FontSizeToken>
+  fontSize?: TokenOrRawValue<FontSizeToken>;
+  background?: ColorTokenOrRawValue | 'transparent';
+  textColor?: ColorTokenOrRawValue;
+  transform?: CSSProperties['transform'];
+  pointerEvents?: CSSProperties['pointerEvents'];
+  /** Renders a stacked container as inline-flex rather than flex. */
+  inline?: boolean;
+  /** Tauri window drag behaviour; emitted as -webkit-app-region. */
+  appRegion?: 'drag' | 'no-drag';
 }
 
 interface ContainerProps {
@@ -46,8 +57,8 @@ type ContainerInjectSpec<Props, Spec extends ContainerSpec> = {
 
 const NON_FORWARD_PROPS = new Set<string>(['spec']);
 
-function toInset(theme: Theme, value?: TokenOrRawValue<SpaceToken>): string | undefined {
-  return toSpace(theme, value);
+function toInset(theme: Theme, value?: InsetValue): string | undefined {
+  return toSpace(theme, value as TokenOrRawValue<SpaceToken>);
 }
 
 function toZIndex(theme: Theme, value?: TokenOrRawValue<ZIndexToken>): string | undefined {
@@ -109,7 +120,6 @@ const ContainerBase = styled.div.withConfig({
 })<ContainerProps>`
   ${({ theme, spec }) => {
     const resolvedStackType = spec?.stackType ?? null;
-    const surface = resolveSurface(theme, spec?.surface);
     const shadow = resolveShadow(theme, spec?.shadow);
     const radius = toRadius(theme, spec?.radius);
     const gap = toSpace(theme, spec?.gap);
@@ -123,15 +133,18 @@ const ContainerBase = styled.div.withConfig({
     const resolvedMaxWidth = toCssSize(spec?.maxWidth);
     const resolvedMinHeight = toCssSize(spec?.minHeight);
     const resolvedMaxHeight = toCssSize(spec?.maxHeight);
+    // `background` is the precise form; `surface` stays as the coarse shorthand.
+    const background = resolveColor(theme, spec?.background) ?? resolveSurface(theme, spec?.surface);
+    const textColor = resolveColor(theme, spec?.textColor);
 
     return css`
       ${resolvedStackType
     ? css`
-            display: flex;
+            display: ${spec?.inline ? 'inline-flex' : 'flex'};
             flex-direction: ${resolvedStackType === 'row' ? 'row' : 'column'};
           `
     : css`
-            display: block;
+            display: ${spec?.inline ? 'inline-block' : 'block'};
           `}
 
       ${spec?.position ? `position: ${spec.position};` : ''}
@@ -154,11 +167,15 @@ const ContainerBase = styled.div.withConfig({
       ${paddingX ? `padding-left: ${paddingX}; padding-right: ${paddingX};` : ''}
       ${paddingY ? `padding-top: ${paddingY}; padding-bottom: ${paddingY};` : ''}
 
-      ${surface ? `background: ${surface};` : ''}
+      ${background ? `background: ${background};` : ''}
+      ${textColor ? `color: ${textColor};` : ''}
       ${radius ? `border-radius: ${radius};` : ''}
       ${shadow ? `box-shadow: ${shadow};` : ''}
       ${zIndex ? `z-index: ${zIndex};` : ''}
       ${spec?.overflow ? `overflow: ${spec.overflow};` : ''}
+      ${spec?.transform ? `transform: ${spec.transform};` : ''}
+      ${spec?.pointerEvents ? `pointer-events: ${spec.pointerEvents};` : ''}
+      ${spec?.appRegion ? `-webkit-app-region: ${spec.appRegion};` : ''}
 
       ${spec?.border === 'default' ? `border: 1px solid ${theme.colors.border};` : ''}
       ${spec?.border === 'top' ? `border-top: 1px solid ${theme.colors.border};` : ''}

@@ -1,12 +1,13 @@
-import styled from 'styled-components';
+import { Container, type ContainerSpec } from '../Container';
 
-export const PDFPageNumber = styled.div`
-  position: absolute;
-  bottom: ${({ theme }) => theme.space[2]};
-  right: ${({ theme }) => theme.space[2]};
-  background: ${({ theme }) => theme.colors.backdrop};
-  color: ${({ theme }) => theme.colors.text};
-  padding: ${({ theme }) => theme.space[1]} ${({ theme }) => theme.space[2]};
-  border-radius: ${({ theme }) => theme.radii.sm};
-  font-size: ${({ theme }) => theme.fontSizes.xs};
-`;
+export const PDFPageNumber = Container.build({
+  position: 'absolute',
+  bottom: 2,
+  right: 2,
+  paddingX: 2,
+  paddingY: 1,
+  radius: 'sm',
+  fontSize: 'xs',
+  background: 'backdrop',
+  textColor: 'text',
+} satisfies ContainerSpec);

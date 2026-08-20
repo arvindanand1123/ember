@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useInternalDriver } from './useInternalDriver';
 import { useStable } from './useStable';
@@ -59,7 +59,7 @@ export function usePdf({
   const stableOnPageChange = useStable(onPageChange);
   const { loadPdf, getPageInfo, renderPage } = useInternalDriver();
 
-  const getRenderedDocument = useCallback(
+  const getRenderedDocument = useStable(
     async (pdfFilePath: string, pdfZoom: number): Promise<DocumentData> => {
       const metadata = await loadPdf(pdfFilePath);
       const pageNumbers = Array.from({ length: metadata.page_count }, (_, i) => i);
@@ -88,7 +88,6 @@ export function usePdf({
         pages,
       };
     },
-    [getPageInfo, loadPdf, renderPage],
   );
 
   useEffect(() => {

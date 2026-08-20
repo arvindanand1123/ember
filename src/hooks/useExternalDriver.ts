@@ -1,8 +1,9 @@
 import { save } from '@tauri-apps/plugin-dialog';
-import { useCallback } from 'react';
+
+import { useStable } from './useStable';
 
 export function useExternalDriver() {
-  const addPath = useCallback(
+  const addPath = useStable(
     (targetPath: string): Promise<string | null> => {
       return save({
         defaultPath: targetPath,
@@ -11,7 +12,7 @@ export function useExternalDriver() {
           extensions: ['pdf'],
         }],
       });
-    }, [],
+    },
   );
   return { addPath };
 }

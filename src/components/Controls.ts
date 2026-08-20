@@ -2,14 +2,12 @@ import * as RadixIcons from '@radix-ui/react-icons';
 import { type ComponentType, createElement, type CSSProperties, type ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-import { type DimensionValue, FontSizeToken, type RadiusToken, type SpaceToken, type Theme, toCssSize, type TokenOrRawValue, toRadius, toSpace } from './theme';
+import { type ColorTokenOrRawValue, type DimensionValue, FontSizeToken, type RadiusToken, resolveColor, type SpaceToken, type Theme, toCssSize, type TokenOrRawValue, toRadius, toSpace } from './theme';
 
 type ControlSizeToken = keyof Theme['controlSizes'];
 type IconSizeToken = keyof Theme['iconSizes'];
 type FontWeightToken = keyof Theme['fontWeights'];
 type ShadowToken = keyof Theme['shadows'];
-type ColorToken = keyof Theme['colors'];
-type ColorTokenOrRawValue = ColorToken | string;
 type RadixIconExportName = Extract<keyof typeof RadixIcons, `${string}Icon`>;
 type RadixIconBaseName = RadixIconExportName extends `${infer TBase}Icon` ? TBase : never;
 
@@ -75,15 +73,6 @@ function toFontWeight(theme: Theme, value?: TokenOrRawValue<FontWeightToken>): s
   }
   if (Object.prototype.hasOwnProperty.call(theme.fontWeights, value)) {
     return theme.fontWeights[value as FontWeightToken];
-  }
-  return value;
-}
-
-function resolveColor(theme: Theme, value?: ColorTokenOrRawValue | 'transparent'): string | undefined {
-  if (value === undefined) return undefined;
-  if (value === 'transparent') return value;
-  if (Object.prototype.hasOwnProperty.call(theme.colors, value)) {
-    return theme.colors[value as ColorToken];
   }
   return value;
 }

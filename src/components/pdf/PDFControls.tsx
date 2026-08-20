@@ -1,5 +1,5 @@
 
-import { Container } from '../Container';
+import { Container, type ContainerSpec } from '../Container';
 import { ControlsLeft, ControlsRight, RotateButton, SecondaryButton, ZoomControls } from '../control-elements';
 import { PageInfo } from './PageInfo';
 import { PDFControlsContainer } from './PDFControlsContainer';
@@ -41,4 +41,4 @@ export default function PDFControls({
   );
 }
 
-const SaveFeedback = Container.build({ fontSize: 'sm' });
+const SaveFeedback = Container.build({ fontSize: 'sm' } satisfies ContainerSpec);

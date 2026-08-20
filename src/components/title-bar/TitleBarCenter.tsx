@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import { Container, type ContainerSpec } from '../Container';
+
 interface TitleBarCenterProps {
   fileName: string;
 }
@@ -12,15 +14,18 @@ export function TitleBarCenter({ fileName }: TitleBarCenterProps) {
   );
 }
 
-const CenterTitle = styled.div`
-  pointer-events: none;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 52%;
-`;
+const CenterTitle = Container.build({
+  position: 'absolute',
+  left: '50%',
+  top: '50%',
+  maxWidth: '52%',
+  transform: 'translate(-50%, -50%)',
+  pointerEvents: 'none',
+} satisfies ContainerSpec);
 
+// agents-allow: theme-tokens -- no token matches 12.5px (xs is 12px, sm is 13px), and
+// rounding to either changes the rendered title bar size. Whether that size change is
+// acceptable is an unmade design decision, not a settled one.
 const FileName = styled.span`
   display: block;
   overflow: hidden;

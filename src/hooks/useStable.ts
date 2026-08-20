@@ -1,7 +1,7 @@
+// eslint-disable-next-line no-restricted-imports -- useStable cannot implement itself; sole sanctioned useCallback
 import { useCallback, useLayoutEffect, useRef } from 'react';
 
-// fine for O(1) layer
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic passthrough, fine for O(1) layer
 export function useStable<T extends(...args: any[]) => any>(fn: T): T {
   const ref = useRef(fn);
   useLayoutEffect(() => {

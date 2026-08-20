@@ -1,7 +1,7 @@
 import { Container, type ContainerSpec } from '../Container';
 import { layoutSizes, semanticSpacing } from '../theme';
 
-const commandInputContainerSpec: ContainerSpec = {
+export const CommandInputContainer = Container.build({
   stackType: 'row',
   position: 'fixed',
   bottom: semanticSpacing.floatingInset,
@@ -15,6 +15,4 @@ const commandInputContainerSpec: ContainerSpec = {
   gap: semanticSpacing.inputGap,
   minWidth: layoutSizes.floatingPanelMinWidth,
   zIndex: 'popover',
-};
-
-export const CommandInputContainer = Container.build(commandInputContainerSpec);
+} satisfies ContainerSpec);
